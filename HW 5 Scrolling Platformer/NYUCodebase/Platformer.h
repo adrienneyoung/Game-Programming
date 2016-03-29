@@ -27,6 +27,8 @@ private:
 	Matrix viewMatrix;
 	Matrix modelMatrixText;
 
+	GLuint font;
+
 	//Entities
 	Entity* player;
 	Entity* block;

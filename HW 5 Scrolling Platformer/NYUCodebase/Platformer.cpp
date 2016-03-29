@@ -36,15 +36,17 @@ void Platformer::Setup() {
 	player = new Entity(0.0f, 1.5f, 0.5f, 0.5f, "akarispritesheet.png");
 	player->sprite = SheetSprite(player->tex, 3, 4, player->width, player->height, 0.5f);
 
-	block = new Entity(0.0f, -0.5f, 0.5f, 0.5f, "sheet.png");
+	block = new Entity(-1.0f, 0.25f, 0.5f, 0.5f, "sheet.png");
 	block->sprite = SheetSprite(block->tex, 14, 7, block->width, block->height, 0.5f);
 
 	for (int i = 0; i < 10; i++) {
 		Entity* block3 = new Entity(-2.5f + (i*0.5f), -2.5f + (i*0.25f), 0.5f, 0.5f, "sheet.png");
-		block3->isStatic = true;
+		//block3->isStatic = true;
 		block3->sprite = SheetSprite(block3->tex, 14, 7, block3->width, block3->height, 0.5f);
 		blocks.push_back(block3);
 	}
+
+	font = LoadTexture("font1.png");
 }
 
 void Platformer::Render() {
@@ -60,8 +62,13 @@ void Platformer::Render() {
 	block->Render(program, block->matrix, 10);
 
 	for (int i = 0; i < blocks.size(); i++) {
-		blocks[i]->Render(program, blocks[i]->matrix, 10);
+		blocks[i]->Render(program, blocks[i]->matrix, 1);
+		blocks[i]->isStatic = true;
 	}
+
+	//program->setModelMatrix(modelMatrixText);
+	//string s = to_string(player->height);
+	//DrawText(program, font, s, 0.2f, 0.2f);
 
 	SDL_GL_SwapWindow(displayWindow);
 }
@@ -76,11 +83,15 @@ void Platformer::Update(float elapsed) {
 
 	scrollScreen();
 	handleCollisions();
+
+	
 }
 
 void Platformer::handleCollisions() {
-	for (int i = 0; i < blocks.size(); i++)
-		player->collidesWith(blocks[i]);
+	//for (int i = 0; i < blocks.size(); i++)
+	//	player->collidesWith(blocks[i]);
+
+	player->collidesWith(block);
 }
 
 bool Platformer::Run()
@@ -88,6 +99,8 @@ bool Platformer::Run()
 	float ticks = (float)SDL_GetTicks() / 1000.0f;
 	float elapsed = ticks - lastFrameTicks;
 	lastFrameTicks = ticks;
+
+	
 
 	SDL_Event event;
 
@@ -112,7 +125,7 @@ bool Platformer::Run()
 
 	//Player move left
 	else if (keys[SDL_SCANCODE_LEFT]) {
-			player->xAcc = elapsed * -5;
+		player->xAcc = elapsed * -5;
 	}
 
 	else if (keys[SDL_SCANCODE_UP]) {
@@ -130,6 +143,8 @@ bool Platformer::Run()
 
 	Update(elapsed);
 	Render();
+
+	
 
 	return done;
 }
