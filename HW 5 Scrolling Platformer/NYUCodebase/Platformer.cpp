@@ -1,20 +1,6 @@
 #include "Platformer.h"
 
 Platformer::Platformer() {
-	Setup();
-
-	player = new Entity(0.0f, 1.5f, 0.5f, 0.5f, 2.5f, "akarispritesheet.png");
-}
-
-
-Platformer::~Platformer()
-{
-	delete program;
-	SDL_Quit();
-}
-
-
-void Platformer::Setup() {
 	SDL_Init(SDL_INIT_VIDEO);
 	displayWindow = SDL_CreateWindow("Scrolling Platformer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 360, SDL_WINDOW_OPENGL);
 	SDL_GLContext context = SDL_GL_CreateContext(displayWindow);
@@ -26,7 +12,39 @@ void Platformer::Setup() {
 	glViewport(0, 0, 640, 360);
 	program = new ShaderProgram(RESOURCE_FOLDER"vertex_textured.glsl", RESOURCE_FOLDER"fragment_textured.glsl");
 
-	projectionMatrix.setOrthoProjection(-3.55f, 3.55f, -2.0f, 2.0f, -1.0f, 1.0f);
+	projectionMatrix.setOrthoProjection(-3.55f, 3.55f, -2.0f, 2.0f, -1.0f, 1.0f); 
+	
+	Setup();
+
+	
+}
+
+Platformer::~Platformer()
+{
+	delete program;
+	SDL_Quit();
+}
+
+void Platformer::scrollScreen()
+{
+	viewMatrix.identity();
+	viewMatrix.Translate(-(player->xPos), -(player->yPos), 0.0f);
+	program->setViewMatrix(viewMatrix);
+}
+
+void Platformer::Setup() {
+	player = new Entity(0.0f, 1.5f, 0.5f, 0.5f, "akarispritesheet.png");
+	player->sprite = SheetSprite(player->tex, 3, 4, player->width, player->height, 0.5f);
+
+	block = new Entity(0.0f, -0.5f, 0.5f, 0.5f, "sheet.png");
+	block->sprite = SheetSprite(block->tex, 14, 7, block->width, block->height, 0.5f);
+
+	for (int i = 0; i < 10; i++) {
+		Entity* block3 = new Entity(-2.5f + (i*0.5f), -2.5f + (i*0.25f), 0.5f, 0.5f, "sheet.png");
+		block3->isStatic = true;
+		block3->sprite = SheetSprite(block3->tex, 14, 7, block3->width, block3->height, 0.5f);
+		blocks.push_back(block3);
+	}
 }
 
 void Platformer::Render() {
@@ -37,14 +55,32 @@ void Platformer::Render() {
 	program->setProjectionMatrix(projectionMatrix);
 	program->setViewMatrix(viewMatrix);
 
-	player->sprite = SheetSprite(player->tex, 3, 4, player->width, player->height, 0.5f);
 	player->Render(program, player->matrix, 1);
+
+	block->Render(program, block->matrix, 10);
+
+	for (int i = 0; i < blocks.size(); i++) {
+		blocks[i]->Render(program, blocks[i]->matrix, 10);
+	}
 
 	SDL_GL_SwapWindow(displayWindow);
 }
 
 void Platformer::Update(float elapsed) {	
+	player->Update(elapsed);
+	block->Update(elapsed);
 
+	/*for (int i = 0; i < blocks.size(); i++) {
+		blocks[i]->Update(elapsed);
+	}*/
+
+	scrollScreen();
+	handleCollisions();
+}
+
+void Platformer::handleCollisions() {
+	for (int i = 0; i < blocks.size(); i++)
+		player->collidesWith(blocks[i]);
 }
 
 bool Platformer::Run()
@@ -60,38 +96,37 @@ bool Platformer::Run()
 			done = true;
 		}
 
-		
 		if (event.type == SDL_KEYUP) {
-			//Reset back to 0 so xMovement won't be a huge number since it is constantly being added by elapsed time
-			player->xMovement = 0;
+			player->yAcc = 0.0f;
+			player->xAcc = 0.0f;
 		}
 	}
 
 	//Keyboard polling
 	const Uint8* keys = SDL_GetKeyboardState(NULL);
-	
+
 	//Player move right
 	if (keys[SDL_SCANCODE_RIGHT]) {
-		//Prevent player from going out of view
-		if (player->xPos + player->width / 2 < 3.3f) {
-			player->xDir = 1.0f;
-			player->xMovement = elapsed * player->speed * player->xDir;
-			player->xPos += player->xMovement;
-			player->matrix.Translate(player->xMovement, 0.0f, 0.0f);
-		}
+		player->xAcc = elapsed * 5;
 	}
 
 	//Player move left
-	if (keys[SDL_SCANCODE_LEFT]) {
-		//Prevent player from going out of view
-		if (player->xPos - player->width / 2 / 2 > -3.3f) {
-			player->xDir = -1.0f;
-			player->xMovement = elapsed * player->speed * player->xDir;
-			player->xPos += player->xMovement;
-			player->matrix.Translate(player->xMovement, 0.0f, 0.0f);
-		}
+	else if (keys[SDL_SCANCODE_LEFT]) {
+			player->xAcc = elapsed * -5;
 	}
-	
+
+	else if (keys[SDL_SCANCODE_UP]) {
+		player->yAcc = elapsed * 5;
+	}
+
+	else if (keys[SDL_SCANCODE_DOWN]) {
+		player->yAcc = elapsed * -5;
+	}
+
+	else if (keys == SDL_GetKeyboardState(NULL)) {
+		player->xVel = lerp(player->xVel, 0.0f, FIXED_TIMESTEP * player->xFric);
+		player->yVel = lerp(player->yVel, 0.0f, FIXED_TIMESTEP * player->yFric);
+	}
 
 	Update(elapsed);
 	Render();

@@ -1,14 +1,16 @@
 #include "Funcs.h"
+#define FIXED_TIMESTEP 0.0166666f
 
 class Entity {
 public:
 	Entity();
 	Entity(float xPos, float yPos, float width, float height, float speed, const char* texPath);
+	Entity(float xPos, float yPos, float width, float height, const char* texPath);
 
 	void Update(float elapsed);
 	void Render(ShaderProgram* program, Matrix& matrix, int index);
 	void jump();
-	bool collidesWith(Entity* e);
+	bool collidesWith(Entity* block);
 
 	//Texture stuff
 	Matrix matrix;
@@ -21,15 +23,7 @@ public:
 	float width;
 	float height;
 
-	//delete this later
-	float speed = 2.0f;
-
-	float xMovement = 0.0f;
-	float yMovement = 0.0f;
-	float xDir = 1.0f;
-	float yDir = 1.0f;
-
-	//Velocity
+	//Velocity (speed + direction)
 	float xVel = 0.0f;
 	float yVel = 0.0f;
 
@@ -37,8 +31,16 @@ public:
 	float xAcc = 0.0f;
 	float yAcc = 0.0f;
 
+	//Friction
+	float xFric = 0.08f;
+	float yFric = 0.08f;
+
 	//Collision detection
-	
+	bool collidedTop;
+	bool collidedBottom;
+	bool collidedLeft;
+	bool collidedRight;
+
 	//Flags
 	bool display = false;
 	bool isStatic = false; //no gravity, no movement, no collision checks ex: a block
