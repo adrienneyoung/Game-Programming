@@ -37,7 +37,7 @@ public:
 
 	//Gravity
 	float xGrav = 0.0f;
-	float yGrav = 0.25f; //Player goes up when gravity is negative for some reason (???)
+	float yGrav = -0.25f; 
 
 	//Collision detection
 	bool collidedTop;

@@ -192,13 +192,22 @@ void Platformer::Setup() {
 	player = new Entity(0.0f, 1.5f, 0.5f, 0.5f, "akarispritesheet.png");
 	player->sprite = SheetSprite(player->tex, 3, 4, player->width, player->height, 0.5f);
 
-	block = new Entity(-1.0f, 0.25f, 0.5f, 0.5f, "sheet.png");
-	block->sprite = SheetSprite(block->tex, 14, 7, block->width, block->height, 0.5f);
+	//block = new Entity(-1.0f, 0.25f, 0.5f, 0.5f, "sheet.png");
+	//block->sprite = SheetSprite(block->tex, 14, 7, block->width, block->height, 0.5f);
 
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < 5; i++) {
 		Entity* block3 = new Entity(-2.5f + (i*0.5f), -2.5f + (i*0.25f), 0.5f, 0.5f, "sheet.png");
 		block3->sprite = SheetSprite(block3->tex, 14, 7, block3->width, block3->height, 0.5f);
 		blocks.push_back(block3);
+	}
+	
+	
+	srand(time(NULL));
+	//Randomly generate blocks
+	for (int i = 0; i < 10; i++) {
+		Entity* block3 = new Entity(-2.5f + (i*0.5f), -2.5f + (rand() % 2) / 0.5f, 0.5f, 0.5f, "sheet.png");
+		block3->sprite = SheetSprite(block3->tex, 14, 7, block3->width, block3->height, 0.5f);
+		staticEntities.push_back(block3);
 	}
 
 	font = LoadTexture("font1.png");
@@ -212,28 +221,38 @@ void Platformer::Render() {
 
 	program->setProjectionMatrix(projectionMatrix);
 	program->setViewMatrix(viewMatrix);
-
+	//program->setViewMatrix(viewMatrix);
 	player->Render(program, player->matrix, 1);
 
-	block->Render(program, block->matrix, 10);
+	//block->Render(program, block->matrix, 10);
 
 	for (int i = 0; i < blocks.size(); i++) {
 		blocks[i]->Render(program, blocks[i]->matrix, 1);
 		blocks[i]->isStatic = true;
 	}
 
+	for (int i = 0; i < staticEntities.size(); i++) {
+		staticEntities[i]->Render(program, staticEntities[i]->matrix, 24);
+		staticEntities[i]->isStatic = true;
+	}
+
 	RenderLevel(); //Doesn't work
+
+	/*program->setModelMatrix(modelMatrixText);
+	string s = to_string();
+	DrawText(program, font, s, 0.2f, 0.2f);*/
+	
 
 	SDL_GL_SwapWindow(displayWindow);
 }
 
 void Platformer::Update(float elapsed) {
 	player->Update(elapsed);
-	block->Update(elapsed);
+	//block->Update(elapsed);
 
-	for (int i = 0; i < blocks.size(); i++) {
+	/*for (int i = 0; i < blocks.size(); i++) {
 	blocks[i]->Update(elapsed);
-	}
+	}*/
 
 	scrollScreen();
 	handleCollisions();
@@ -241,12 +260,16 @@ void Platformer::Update(float elapsed) {
 
 void Platformer::handleCollisions() {
 
-	if (player->collidesWith(block))
-		player->handleCollision(block);
+	/*if (player->collidesWith(block))
+		player->handleCollision(block);*/
 
 	for (int i = 0; i < blocks.size(); i++)
 		if (player->collidesWith(blocks[i]))
 			player->handleCollision(blocks[i]);
+
+	for (int i = 0; i < staticEntities.size(); i++)
+		if (player->collidesWith(staticEntities[i]))
+			player->handleCollision(staticEntities[i]);
 }
 
 bool Platformer::Run()

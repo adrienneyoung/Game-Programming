@@ -13,6 +13,9 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <stdio.h>      /* printf, scanf, puts, NULL */
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
 using namespace std;
 
 #ifdef _WINDOWS

@@ -43,8 +43,9 @@ private:
 
 	//Entities
 	Entity* player;
-	Entity* block;
-	vector<Entity*> blocks;
+	//Entity* block;
+	vector<Entity*> blocks; //this is for testing purposes
+	vector<Entity*> staticEntities;
 
 	//Map stuff
 	int mapWidth;

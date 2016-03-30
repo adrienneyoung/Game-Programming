@@ -21,13 +21,15 @@ void Entity::Update(float elapsed)
 
 	xVel += xAcc * FIXED_TIMESTEP;
 
-	yAcc = yGrav * FIXED_TIMESTEP;
-	yVel += yAcc * FIXED_TIMESTEP;
+	if (!isStatic) {
+		yAcc = yGrav * FIXED_TIMESTEP;
+		yVel += yAcc * FIXED_TIMESTEP;
+	}
 }
 
 //Jump if currently touching the ground
 void Entity::jump() {
-	yVel = 1.5f;
+	yVel = 0.05f;
 }
 
 bool Entity::collidesWith(Entity* block) {
