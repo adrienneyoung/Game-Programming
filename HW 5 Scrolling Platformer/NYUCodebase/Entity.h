@@ -35,6 +35,10 @@ public:
 	float xFric = 0.08f;
 	float yFric = 0.08f;
 
+	//Gravity
+	float xGrav = 0.0f;
+	float yGrav = -0.25f;
+
 	//Collision detection
 	bool collidedTop;
 	bool collidedBottom;
@@ -44,4 +48,5 @@ public:
 	//Flags
 	bool display = false;
 	bool isStatic = false; //no gravity, no movement, no collision checks ex: a block
+	
 };

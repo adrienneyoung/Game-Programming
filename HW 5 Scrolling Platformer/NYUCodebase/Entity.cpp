@@ -20,12 +20,14 @@ void Entity::Update(float elapsed)
 	yPos += yVel * FIXED_TIMESTEP;
 
 	xVel += xAcc * FIXED_TIMESTEP;
+
+	yAcc = yGrav * FIXED_TIMESTEP;
 	yVel += yAcc * FIXED_TIMESTEP;
 }
 
 //Jump if currently touching the ground
 void Entity::jump() {
-	xVel = 2.0f;
+	yVel = 0.25f;
 }
 
 bool Entity::collidesWith(Entity* block) {
@@ -63,46 +65,43 @@ void Entity::handleCollision(Entity* block) {
 	float xPen = 0.0f;
 	float yPen = 0.0f;
 
-	if (left < blockRight && right > blockLeft) {
+	//2.5f instead of 2.0f so that the player has to be deeper inside the block for the collision to occur
+	if (fabs(xPos - block->xPos) < (block->width + width) / 2.5f) {
 		if (block->isStatic) {
 			yVel = 0.0f;
 		}
 
-		if (yPos > block->yPos)
+		if (bot > block->yPos)
 		{
 			collidedBottom = true;
-			//Akari's amount of penetration = abs(bottom of Akari - blockTop) 
-			yPen = fabs((yPos - height / 2) - (block->yPos + block->height / 2));
+			yPen = fabs((bot) - (blockTop));
 			yPos += yPen + 0.0001f;
 		}
 
-		else
+		else if (top < block->yPos)
 		{
 			collidedTop = true;
-			//Akari's amount of penetration = abs(top of Akari - blockBot)
-			yPen = fabs((yPos + height / 2) - (block->yPos - block->height / 2));
+			yPen = fabs((top) - (blockBot));
 			yPos -= yPen + 0.0001f;
 		}
 	}
 
-	if (bot < blockTop && top > blockBot) {
+	 if (fabs(yPos - block->yPos) < (block->height + height) / 2.5f) {
 		if (block->isStatic) {
 			xVel = 0.0f;
 		}
 
-		if (xPos > block->xPos)
+		if (left > block->xPos)
 		{
 			collidedLeft = true;
-			//Akari's amount of penetration = abs(left of Akari - blockRight) 
-			xPen = fabs((xPos - width / 2) - (block->xPos + block->width / 2));
+			xPen = fabs((left) - (blockRight));
 			xPos += xPen + 0.0001f;
 		}
 
-		else
+		else if (right < block->xPos)
 		{
 			collidedRight = true;
-			//Akari's amount of penetration = abs(right of Akari - blockLeft)
-			xPen = fabs((xPos + width / 2) - (block->xPos - block->width / 2));
+			xPen = fabs((right) - (blockLeft));
 			xPos -= xPen + 0.0001f;
 		}
 	}

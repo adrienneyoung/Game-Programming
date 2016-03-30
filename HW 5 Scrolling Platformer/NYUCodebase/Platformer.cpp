@@ -15,8 +15,6 @@ Platformer::Platformer() {
 	projectionMatrix.setOrthoProjection(-3.55f, 3.55f, -2.0f, 2.0f, -1.0f, 1.0f);
 
 	Setup();
-
-
 }
 
 Platformer::~Platformer()
@@ -77,18 +75,19 @@ void Platformer::Update(float elapsed) {
 	player->Update(elapsed);
 	block->Update(elapsed);
 
-	/*for (int i = 0; i < blocks.size(); i++) {
+	for (int i = 0; i < blocks.size(); i++) {
 	blocks[i]->Update(elapsed);
-	}*/
+	}
 
 	scrollScreen();
 	handleCollisions();
-	
-
-
 }
 
 void Platformer::handleCollisions() {
+
+	if (player->collidesWith(block))
+		player->handleCollision(block);
+
 	for (int i = 0; i < blocks.size(); i++)
 		if (player->collidesWith(blocks[i]))
 			player->handleCollision(blocks[i]);
@@ -102,8 +101,6 @@ bool Platformer::Run()
 	float ticks = (float)SDL_GetTicks() / 1000.0f;
 	float elapsed = ticks - lastFrameTicks;
 	lastFrameTicks = ticks;
-
-
 
 	SDL_Event event;
 
@@ -139,6 +136,10 @@ bool Platformer::Run()
 		player->yAcc = elapsed * -5;
 	}
 
+	else if (keys[SDL_SCANCODE_SPACE]) {
+		player->jump();
+	}
+
 	else if (keys == SDL_GetKeyboardState(NULL)) {
 		player->xVel = lerp(player->xVel, 0.0f, FIXED_TIMESTEP * player->xFric);
 		player->yVel = lerp(player->yVel, 0.0f, FIXED_TIMESTEP * player->yFric);
@@ -146,8 +147,6 @@ bool Platformer::Run()
 
 	Update(elapsed);
 	Render();
-
-
 
 	return done;
 }

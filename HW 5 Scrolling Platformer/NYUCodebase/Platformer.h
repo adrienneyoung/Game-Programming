@@ -32,13 +32,8 @@ private:
 	//Entities
 	Entity* player;
 	Entity* block;
-	Entity* block2;
 	vector<Entity*> blocks;
 
 	bool done = false;
 	float lastFrameTicks = 0.0f;
-
-	//Gravity
-	float xGrav = 0.0f;
-	float yGrav = -0.5f;
 };
