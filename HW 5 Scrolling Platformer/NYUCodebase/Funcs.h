@@ -9,6 +9,10 @@
 #include "ShaderProgram.h"
 #include "Matrix.h"
 #include <vector>
+#include <fstream>
+#include <string>
+#include <iostream>
+#include <sstream>
 using namespace std;
 
 #ifdef _WINDOWS
@@ -37,3 +41,4 @@ public:
 };
 
 float lerp(float v0, float v1, float t);
+

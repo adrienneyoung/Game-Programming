@@ -27,7 +27,7 @@ void Entity::Update(float elapsed)
 
 //Jump if currently touching the ground
 void Entity::jump() {
-	yVel = 0.25f;
+	yVel = 1.5f;
 }
 
 bool Entity::collidesWith(Entity* block) {
