@@ -1,8 +1,6 @@
 #include "Entity.h"
 
 Entity::Entity() {}
-Entity::Entity(float xPos, float yPos, float width, float height, float speed, const char* texPath)
-	: xPos(xPos), yPos(yPos), width(width), height(height) { tex = LoadTexture(texPath); }
 Entity::Entity(float xPos, float yPos, float width, float height, const char* texPath)
 	: xPos(xPos), yPos(yPos), width(width), height(height) { tex = LoadTexture(texPath); }
 
@@ -18,13 +16,11 @@ void Entity::Update(float elapsed)
 	collidedLeft = false;
 	collidedRight = false;
 
-	xVel += xAcc * FIXED_TIMESTEP;
 	xPos += xVel * FIXED_TIMESTEP;
-
-	yVel += yAcc * FIXED_TIMESTEP;
 	yPos += yVel * FIXED_TIMESTEP;
 
-	//matrix.Translate(xVel * FIXED_TIMESTEP, yVel * FIXED_TIMESTEP, 0.0f);
+	xVel += xAcc * FIXED_TIMESTEP;
+	yVel += yAcc * FIXED_TIMESTEP;
 }
 
 //Jump if currently touching the ground
@@ -41,9 +37,20 @@ bool Entity::collidesWith(Entity* block) {
 	If ANY of the above are true, then the two rectangles are NOT intersecting!
 	The rectangles are intersecting if NONE of the above are true.
 	*/
-	
-	float top = yPos+ height / 2;
-	float bot = yPos- height / 2;
+
+	//if (bot < blockTop && top > blockBot && left < blockRight && right > blockLeft)
+	if (yPos - height / 2 < block->yPos + block->height / 2 &&
+		yPos + height / 2 > block->yPos - block->height / 2 &&
+		xPos - width / 2 < block->xPos + block->width / 2 &&
+		xPos + width / 2 > block->xPos - block->width / 2)
+		return true; //there's a collision
+	return false;
+}
+
+
+void Entity::handleCollision(Entity* block) {
+	float top = yPos + height / 2;
+	float bot = yPos - height / 2;
 	float left = xPos - width / 2;
 	float right = xPos + width / 2;
 
@@ -53,71 +60,51 @@ bool Entity::collidesWith(Entity* block) {
 	float blockRight = block->xPos + block->width / 2;
 
 	//Penetration
-	float yPen = 0.0f;
 	float xPen = 0.0f;
-	
-	if (bot < blockTop) {
-		if (left < blockRight && right > blockLeft && top > blockBot) { //fix top > blockBot since it conflicts
+	float yPen = 0.0f;
+
+	if (left < blockRight && right > blockLeft) {
+		if (block->isStatic) {
+			yVel = 0.0f;
+		}
+
+		if (yPos > block->yPos)
+		{
 			collidedBottom = true;
-
-			if (block->isStatic) {
-				yVel = 0.0f;
-			}
-
 			//Akari's amount of penetration = abs(bottom of Akari - blockTop) 
 			yPen = fabs((yPos - height / 2) - (block->yPos + block->height / 2));
 			yPos += yPen + 0.0001f;
 		}
-	}
-	
-	
-	else if (top > blockBot) {
-		if (left < blockRight && right > blockLeft && bot < blockTop) { //fix bot < blockTop since it conflicts
+
+		else
+		{
 			collidedTop = true;
-
-			if (block->isStatic) {
-				yVel = 0.0f;
-			}
-
 			//Akari's amount of penetration = abs(top of Akari - blockBot)
 			yPen = fabs((yPos + height / 2) - (block->yPos - block->height / 2));
 			yPos -= yPen + 0.0001f;
 		}
 	}
-	/*
-	
-	if (left < blockRight) {
-		if (top > blockBot && bot < blockTop && right > blockLeft) {
-			collidedLeft = true;
-			if (block->isStatic) {
-				xVel = 0.0f;
-				xAcc = 0.0f;
-			}
 
-			//Akari's amount of penetration = abs(left of Akari - blockRight)
+	if (bot < blockTop && top > blockBot) {
+		if (block->isStatic) {
+			xVel = 0.0f;
+		}
+
+		if (xPos > block->xPos)
+		{
+			collidedLeft = true;
+			//Akari's amount of penetration = abs(left of Akari - blockRight) 
 			xPen = fabs((xPos - width / 2) - (block->xPos + block->width / 2));
 			xPos += xPen + 0.0001f;
 		}
-	}
 
-	
-	else if (right > blockLeft) {
-		if (top > blockBot && bot < blockTop && left < blockRight) {
+		else
+		{
 			collidedRight = true;
-			if (block->isStatic) {
-				xVel = 0.0f;
-				xAcc = 0.0f;
-			}
-			
 			//Akari's amount of penetration = abs(right of Akari - blockLeft)
 			xPen = fabs((xPos + width / 2) - (block->xPos - block->width / 2));
 			xPos -= xPen + 0.0001f;
 		}
 	}
-	*/
-	
-	if (bot < blockTop && top > blockBot && left < blockRight && right > blockLeft)
-		return true; //there's a collision
-	return false;
 }
 

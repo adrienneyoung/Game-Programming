@@ -40,5 +40,5 @@ private:
 
 	//Gravity
 	float xGrav = 0.0f;
-	float yGrav = -1.0f;
+	float yGrav = -0.5f;
 };

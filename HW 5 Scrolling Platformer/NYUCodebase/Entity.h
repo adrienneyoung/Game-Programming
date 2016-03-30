@@ -4,13 +4,13 @@
 class Entity {
 public:
 	Entity();
-	Entity(float xPos, float yPos, float width, float height, float speed, const char* texPath);
 	Entity(float xPos, float yPos, float width, float height, const char* texPath);
 
 	void Update(float elapsed);
 	void Render(ShaderProgram* program, Matrix& matrix, int index);
 	void jump();
 	bool collidesWith(Entity* block);
+	void handleCollision(Entity* block);
 
 	//Texture stuff
 	Matrix matrix;

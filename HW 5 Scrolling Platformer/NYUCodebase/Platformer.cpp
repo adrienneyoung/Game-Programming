@@ -12,11 +12,11 @@ Platformer::Platformer() {
 	glViewport(0, 0, 640, 360);
 	program = new ShaderProgram(RESOURCE_FOLDER"vertex_textured.glsl", RESOURCE_FOLDER"fragment_textured.glsl");
 
-	projectionMatrix.setOrthoProjection(-3.55f, 3.55f, -2.0f, 2.0f, -1.0f, 1.0f); 
-	
+	projectionMatrix.setOrthoProjection(-3.55f, 3.55f, -2.0f, 2.0f, -1.0f, 1.0f);
+
 	Setup();
 
-	
+
 }
 
 Platformer::~Platformer()
@@ -73,25 +73,28 @@ void Platformer::Render() {
 	SDL_GL_SwapWindow(displayWindow);
 }
 
-void Platformer::Update(float elapsed) {	
+void Platformer::Update(float elapsed) {
 	player->Update(elapsed);
 	block->Update(elapsed);
 
 	/*for (int i = 0; i < blocks.size(); i++) {
-		blocks[i]->Update(elapsed);
+	blocks[i]->Update(elapsed);
 	}*/
 
 	scrollScreen();
 	handleCollisions();
-
 	
+
+
 }
 
 void Platformer::handleCollisions() {
-	//for (int i = 0; i < blocks.size(); i++)
-	//	player->collidesWith(blocks[i]);
+	for (int i = 0; i < blocks.size(); i++)
+		if (player->collidesWith(blocks[i]))
+			player->handleCollision(blocks[i]);
 
-	player->collidesWith(block);
+	//if (player->collidesWith(block))
+	//	player->handleCollision(block);
 }
 
 bool Platformer::Run()
@@ -100,7 +103,7 @@ bool Platformer::Run()
 	float elapsed = ticks - lastFrameTicks;
 	lastFrameTicks = ticks;
 
-	
+
 
 	SDL_Event event;
 
@@ -144,7 +147,7 @@ bool Platformer::Run()
 	Update(elapsed);
 	Render();
 
-	
+
 
 	return done;
 }
