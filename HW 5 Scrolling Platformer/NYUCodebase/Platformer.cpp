@@ -289,6 +289,12 @@ bool Platformer::Run()
 			player->yAcc = 0.0f;
 			player->xAcc = 0.0f;
 		}
+
+		if (event.type == SDL_KEYDOWN) {
+			if (event.key.keysym.scancode == SDL_SCANCODE_SPACE) {
+				player->jump();
+			}
+		}
 	}
 
 	//Keyboard polling
@@ -304,17 +310,13 @@ bool Platformer::Run()
 		player->xAcc = elapsed * -5;
 	}
 
-	else if (keys[SDL_SCANCODE_UP]) {
+	/*else if (keys[SDL_SCANCODE_UP]) {
 		player->yAcc = elapsed * 5;
 	}
 
 	else if (keys[SDL_SCANCODE_DOWN]) {
 		player->yAcc = elapsed * -5;
-	}
-
-	else if (keys[SDL_SCANCODE_SPACE]) {
-		player->jump();
-	}
+	}*/
 
 	else if (keys == SDL_GetKeyboardState(NULL)) {
 		player->xVel = lerp(player->xVel, 0.0f, FIXED_TIMESTEP * player->xFric);

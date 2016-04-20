@@ -29,7 +29,8 @@ void Entity::Update(float elapsed)
 
 //Jump if currently touching the ground
 void Entity::jump() {
-	yVel = 0.05f;
+	if (collidedBottom)
+		yVel = 0.1f;
 }
 
 bool Entity::collidesWith(Entity* block) {
@@ -67,43 +68,50 @@ void Entity::handleCollision(Entity* block) {
 	float xPen = 0.0f;
 	float yPen = 0.0f;
 
+	//The condition checks if the player is within the block's boundaries (blockLeft and blockRight)
 	//2.5f instead of 2.0f so that the player has to be deeper inside the block for the collision to occur
-	if (fabs(xPos - block->xPos) < (block->width + width) / 2.5f) {
+	if (fabs(xPos - block->xPos) < (width + block->width) / 2.5f) {
 		if (block->isStatic) {
 			yVel = 0.0f;
 		}
 
+		//Player's bottom collided with block's center
 		if (bot > block->yPos)
 		{
 			collidedBottom = true;
-			yPen = fabs((bot) - (blockTop));
+			yPen = fabs(bot - blockTop);
 			yPos += yPen + 0.0001f;
 		}
 
+		//Player's top collided with block's center
 		else if (top < block->yPos)
 		{
 			collidedTop = true;
-			yPen = fabs((top) - (blockBot));
+			yPen = fabs(top - blockBot);
 			yPos -= yPen + 0.0001f;
 		}
 	}
 
-	 if (fabs(yPos - block->yPos) < (block->height + height) / 2.5f) {
+	//The condition checks if the player is within the block's boundaries (blockTop and blockBot)
+	//2.5f instead of 2.0f so that the player has to be deeper inside the block for the collision to occur
+	if (fabs(yPos - block->yPos) < (height + block->height) / 2.5f) {
 		if (block->isStatic) {
 			xVel = 0.0f;
 		}
 
+		//Player's left collided with block's center
 		if (left > block->xPos)
 		{
 			collidedLeft = true;
-			xPen = fabs((left) - (blockRight));
+			xPen = fabs(left - blockRight);
 			xPos += xPen + 0.0001f;
 		}
 
+		//Player's right collided with block's center
 		else if (right < block->xPos)
 		{
 			collidedRight = true;
-			xPen = fabs((right) - (blockLeft));
+			xPen = fabs(right - blockLeft);
 			xPos -= xPen + 0.0001f;
 		}
 	}
