@@ -1,4 +1,5 @@
 #include "Entity.h"
+#include <vector>
 
 // 60 FPS (1.0f/60.0f)
 #define FIXED_TIMESTEP 0.0166666f
@@ -37,9 +38,14 @@ private:
 	Matrix viewMatrix;
 	Matrix modelMatrixText;
 	Matrix modelMatrix;
+	Matrix backgroundMatrix;
 
 	GLuint font;
 	GLuint sheet;
+	GLuint background;
+
+	vector<float> bg;
+	vector<float> texCoords;
 
 	//Entities
 	Entity* player;

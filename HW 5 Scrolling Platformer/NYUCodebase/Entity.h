@@ -32,8 +32,8 @@ public:
 	float yAcc = 0.0f;
 
 	//Friction
-	float xFric = 0.08f;
-	float yFric = 0.08f;
+	float xFric = 0.4f;
+	float yFric = 0.05f;
 
 	//Gravity
 	float xGrav = 0.0f;
@@ -48,5 +48,13 @@ public:
 	//Flags
 	bool display = false;
 	bool isStatic = false; //no gravity, no movement, no collision checks ex: a block
-	
+
+	//Animate player
+	vector<int> runAnimationLeft;
+	vector<int> runAnimationRight;
+	const int numFrames = 3;
+	float animationElapsed = 0.0f;
+	float framesPerSecond = 10.0f;
+	int currentIndex = 0;
+	int directionFacing = 0;
 };
