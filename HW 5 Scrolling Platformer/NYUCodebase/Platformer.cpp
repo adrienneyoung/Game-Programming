@@ -194,6 +194,16 @@ void Platformer::Setup() {
 	player = new Entity(0.0f, 1.5f, 0.5f, 0.5f, "akarispritesheet.png");
 	player->sprite = SheetSprite(player->tex, 3, 4, player->width, player->height, 0.5f);
 
+	//Store player's bullets in vector
+	for (int i = 0; i < player->maxBullets; i++) {
+		Entity* bullet = new Entity(player->xPos, player->yPos, 0.5f, 0.5f, "bun.png");
+		player->bullets.push_back(bullet);
+	}
+
+	//Animate player
+	player->runAnimationLeft = { 3, 4, 5 };
+	player->runAnimationRight = { 6, 7, 8 };
+
 	//Blocks
 	//block = new Entity(-1.0f, 0.25f, 0.5f, 0.5f, "sheet.png");
 	//block->sprite = SheetSprite(block->tex, 14, 7, block->width, block->height, 0.5f);
@@ -224,7 +234,7 @@ void Platformer::Setup() {
 	background = LoadTexture("bg2.png");
 
 	//Stuff for background
-	bg = { -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f };
+	vertices = { -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f };
 	texCoords = { 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0 };
 
 	//Main music
@@ -232,10 +242,6 @@ void Platformer::Setup() {
 	Mix_Music *music;
 	music = Mix_LoadMUS("fate.mp3");
 	Mix_PlayMusic(music, -1);
-
-	//Animate player
-	player->runAnimationLeft = { 3, 4, 5 };
-	player->runAnimationRight = { 6, 7, 8 };
 }
 
 void Platformer::Render() {
@@ -257,7 +263,7 @@ void Platformer::Render() {
 	backgroundMatrix.setScale(12.0f, 4.0f, 1.0f);
 
 	//Render player
-	player->matrix.setScale(5.0, 5.0, 1.0);
+	//player->matrix.setScale(3.0, 3.0, 1.0);
 	if (player->directionFacing == 0)
 		player->Render(program, player->matrix, 1);
 
@@ -266,6 +272,19 @@ void Platformer::Render() {
 
 	else if (player->directionFacing == -1)
 		player->Render(program, player->matrix, player->runAnimationLeft[player->currentIndex]);
+
+	//Draw player's bullets
+	for (int i = 0; i < player->maxBullets; i++) {
+		if (player->bullets[i]->display) {
+			program->setModelMatrix(player->bullets[i]->matrix);
+			player->bullets[i]->matrix.setPosition(player->xPos, player->yPos, 0.0f);
+
+			glVertexAttribPointer(program->texCoordAttribute, 2, GL_FLOAT, false, 0, texCoords.data());
+			glBindTexture(GL_TEXTURE_2D, player->bullets[i]->tex);
+			glVertexAttribPointer(program->positionAttribute, 2, GL_FLOAT, false, 0, vertices.data());
+			glDrawArrays(GL_TRIANGLES, 0, 6);
+		}
+	}
 
 	//Render blocks
 	//block->Render(program, block->matrix, 10);
@@ -282,10 +301,10 @@ void Platformer::Render() {
 
 	RenderLevel(); //Doesn't work
 
-	program->setModelMatrix(modelMatrixText);
+	//program->setModelMatrix(modelMatrixText);
 	//string s = to_string(player->runAnimationRight[player->currentIndex]);
-	string s = to_string(player->directionFacing);
-	DrawText(program, font, s, 0.2f, 0.2f);
+	//string s = to_string(player->directionFacing);
+	//DrawText(program, font, s, 0.2f, 0.2f);
 	//DrawText(program, font, "i love akari", 0.2f, 0.2f);
 
 	SDL_GL_SwapWindow(displayWindow);
@@ -302,6 +321,7 @@ void Platformer::Update(float elapsed) {
 	scrollScreen();
 	handleCollisions();
 
+	//Player walking animation
 	player->animationElapsed += elapsed;
 	if (player->animationElapsed > 1.0 / player->framesPerSecond) {
 		player->currentIndex++;
@@ -309,6 +329,17 @@ void Platformer::Update(float elapsed) {
 		if (player->currentIndex > player->numFrames - 1) {
 			player->currentIndex = 0;
 		}
+	}
+
+	//Player's bullets
+	player->bullets[i]->yMovement = elapsed * bullets[i].speed * bullets[i].yDir;
+	player->bullets[i]->y += bullets[i].yMovement;
+	player->bullets[i]->matrix.Translate(0.0f, bullets[i].yMovement, 0.0f);
+
+	//If bullets fly off screen
+	if (bullets[i].y + bullets[i].height / 2 > 2.0f) {
+		bullets[i].display = false;
+		bullets[i].speed = 0.0f;
 	}
 }
 

@@ -44,7 +44,7 @@ private:
 	GLuint sheet;
 	GLuint background;
 
-	vector<float> bg;
+	vector<float> vertices;
 	vector<float> texCoords;
 
 	//Entities

@@ -57,4 +57,9 @@ public:
 	float framesPerSecond = 10.0f;
 	int currentIndex = 0;
 	int directionFacing = 0;
+
+	//Player's bullets
+	vector<Entity*> bullets;
+	int maxBullets = 5;
+	int bulletCount = 0;
 };
