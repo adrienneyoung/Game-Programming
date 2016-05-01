@@ -35,7 +35,7 @@ public:
 
 	//Friction
 	float xFric = 0.4f;
-	float yFric = 0.05f;
+	float yFric = 0.0f;
 
 	//Gravity
 	float xGrav = 0.0f;
@@ -50,6 +50,7 @@ public:
 	//Flags
 	bool display = false;
 	bool isStatic = false; //no gravity, no movement, no collision checks ex: a block
+	bool isBullet = false;
 
 	//Animate player
 	vector<int> runAnimationLeft;

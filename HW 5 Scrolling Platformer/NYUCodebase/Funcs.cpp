@@ -25,14 +25,24 @@ void DrawText(ShaderProgram *program, int fontTexture, std::string text, float s
 	for (int i = 0; i < text.size(); i++) {
 		float texture_x = (float)(((int)text[i]) % 16) / 16.0f;
 		float texture_y = (float)(((int)text[i]) / 16) / 16.0f;
-		vertexData.insert(vertexData.end(), {
+		/*vertexData.insert(vertexData.end(), {
 			((size + spacing) * i) + (-7.55f * size), 0.5f * size,
 			((size + spacing) * i) + (-7.55f * size), -0.5f * size,
 			((size + spacing) * i) + (-6.55f * size), 0.5f * size,
 			((size + spacing) * i) + (-6.55f * size), -0.5f * size,
 			((size + spacing) * i) + (-6.55f * size), 0.5f * size,
 			((size + spacing) * i) + (-7.55f * size), -0.5f * size,
+		});*/
+
+		vertexData.insert(vertexData.end(), {
+			((size + spacing) * i) + (-7.55f * size), -1.5f * size,
+			((size + spacing) * i) + (-7.55f * size), -2.5f * size,
+			((size + spacing) * i) + (-6.55f * size), -1.5f * size,
+			((size + spacing) * i) + (-6.55f * size), -2.5f * size,
+			((size + spacing) * i) + (-6.55f * size), -1.5f * size,
+			((size + spacing) * i) + (-7.55f * size), -2.5f * size,
 		});
+
 		texCoordData.insert(texCoordData.end(), {
 			texture_x, texture_y,
 			texture_x, texture_y + texture_size,

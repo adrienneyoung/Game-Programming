@@ -36,6 +36,10 @@ void Entity::Update(float elapsed)
 		}
 	}
 
+	if (isBullet) {
+		yGrav = 0.0f;
+		xFric = 0.0f;
+	}
 	
 }
 
