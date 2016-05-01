@@ -8,7 +8,9 @@ public:
 
 	void Update(float elapsed);
 	void Render(ShaderProgram* program, Matrix& matrix, int index);
+
 	void jump();
+
 	bool collidesWith(Entity* block);
 	void handleCollision(Entity* block);
 
@@ -60,6 +62,6 @@ public:
 
 	//Player's bullets
 	vector<Entity*> bullets;
-	int maxBullets = 5;
+	int maxBullets = 10;
 	int bulletCount = 0;
 };

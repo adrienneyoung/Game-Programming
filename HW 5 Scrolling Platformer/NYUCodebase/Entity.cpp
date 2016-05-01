@@ -25,6 +25,18 @@ void Entity::Update(float elapsed)
 		yAcc = yGrav * FIXED_TIMESTEP;
 		yVel += yAcc * FIXED_TIMESTEP;
 	}
+
+	//Player walking animation
+	animationElapsed += elapsed;
+	if (animationElapsed > 1.0 / framesPerSecond) {
+		currentIndex++;
+		animationElapsed = 0.0;
+		if (currentIndex > numFrames - 1) {
+			currentIndex = 0;
+		}
+	}
+
+	
 }
 
 //Jump if currently touching the ground

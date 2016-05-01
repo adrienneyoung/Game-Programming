@@ -1,5 +1,6 @@
 #include "Entity.h"
 #include <vector>
+#include <SDL_mixer.h>
 
 // 60 FPS (1.0f/60.0f)
 #define FIXED_TIMESTEP 0.0166666f
@@ -33,6 +34,8 @@ private:
 
 	ShaderProgram* program;
 
+	Mix_Music* music;
+
 	//Matrices
 	Matrix projectionMatrix;
 	Matrix viewMatrix;
@@ -41,7 +44,7 @@ private:
 	Matrix backgroundMatrix;
 
 	GLuint font;
-	GLuint sheet;
+	GLuint spritesheet;
 	GLuint background;
 
 	vector<float> vertices;
