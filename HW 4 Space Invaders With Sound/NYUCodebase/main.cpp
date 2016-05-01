@@ -4,9 +4,9 @@
 #include <SDL.h>
 #include <SDL_opengl.h>
 #include <SDL_image.h>
+#include <SDL_mixer.h>
 #include "ShaderProgram.h"
 #include "Matrix.h"
-#include <SDL_mixer.h>
 #include <vector>
 using namespace std;
 
@@ -97,6 +97,67 @@ void DrawSpriteSheetSprite(ShaderProgram *program, int index, int spriteCountX,
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
+class SheetSprite
+{
+public:
+	SheetSprite() {}
+	SheetSprite(unsigned int texID, int spriteCountX, int spriteCountY, float width, float height, float size) :
+		texID(texID), spriteCountX(spriteCountX), spriteCountY(spriteCountY), width(width), height(height), size(size) {}
+
+	void Draw(ShaderProgram* program, Matrix& matrix, int index, float x, float y)  {
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		float u = (float)(((int)index) % spriteCountX) / (float)spriteCountX;
+		float v = (float)(((int)index) / spriteCountX) / (float)spriteCountY;
+		float spriteWidth = 1.0 / (float)spriteCountX;
+		float spriteHeight = 1.0 / (float)spriteCountY;
+
+		GLfloat texCoords[] = {
+			u, v + spriteHeight,
+			u + spriteWidth, v,
+			u, v,
+			u + spriteWidth, v,
+			u, v + spriteHeight,
+			u + spriteWidth, v + spriteHeight
+		};
+
+		float aspect = width / height;
+		float vertices[] = {
+			-0.5f * size * aspect, -0.5f * size,
+			0.5f * size * aspect, 0.5f * size,
+			-0.5f * size * aspect, 0.5f * size,
+			0.5f * size * aspect, 0.5f * size,
+			-0.5f * size * aspect, -0.5f * size,
+			0.5f * size * aspect, -0.5f * size
+		};
+
+		glVertexAttribPointer(program->positionAttribute, 2, GL_FLOAT, false, 0, vertices);
+		glEnableVertexAttribArray(program->positionAttribute);
+
+		glVertexAttribPointer(program->texCoordAttribute, 2, GL_FLOAT, false, 0, texCoords);
+		glEnableVertexAttribArray(program->texCoordAttribute);
+
+		program->setModelMatrix(matrix);
+		matrix.setPosition(x, y, 0.0f);
+		//matrix.setScale(scale, scale, 1.0f);
+
+		glBindTexture(GL_TEXTURE_2D, texID);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		glDisableVertexAttribArray(program->positionAttribute);
+		glDisableVertexAttribArray(program->texCoordAttribute);
+	}
+
+	float size;
+	unsigned int texID;
+	int spriteCountX;
+	int spriteCountY;
+	float width;
+	float height;
+};
+
+
 class Entity {
 public:
 	Entity(float x, float y, float width, float height, float speed, const char* texPath, float scale)
@@ -115,6 +176,7 @@ public:
 	Matrix matrix;
 	GLuint tex;
 	vector<float> vertices;
+	SheetSprite sprite;
 
 	void transform(ShaderProgram& program) {
 		program.setModelMatrix(matrix);
@@ -171,18 +233,6 @@ int main(int argc, char *argv[])
 
 	projectionMatrix.setOrthoProjection(-3.55f, 3.55f, -2.0f, 2.0f, -1.0f, 1.0f);
 
-	//Music
-	//Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
-
-	//Mix_Music* chinatsu;
-	//chinatsu = Mix_LoadMUS("chinatsu.mp3");
-	//Mix_PlayMusic(chinatsu, -1);
-
-	//Mix_Chunk* akarin;
-	//akarin = Mix_LoadWAV("akarin.wav");
-	//Mix_Music *akarin;
-	//akarin = Mix_LoadMUS("akarin.mp3");
-
 	GLuint font = LoadTexture("font1.png");
 	float texCoords[] = { 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0 };
 	float lastFrameTicks = 0.0f;
@@ -191,6 +241,9 @@ int main(int argc, char *argv[])
 	//Player
 	Entity player(0.0f, -1.5f, 0.5f, 0.5f, 2.5f, "akarispritesheet.png", 0.25f);
 	player.display = true;
+
+	/*Entity player2(0.0f, 1.5f, 0.5f, 0.5f, 2.5f, "akarispritesheet.png", 0.25f);
+	player2.display = true;*/
 
 	//Player's bullets
 	vector<Entity> bullets;
@@ -237,6 +290,19 @@ int main(int argc, char *argv[])
 		enemyBullets[i].transform(program);
 	}
 
+	//Music
+	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
+
+	Mix_Music* chinatsu;
+	chinatsu = Mix_LoadMUS("chinatsu.mp3");
+	Mix_PlayMusic(chinatsu, -1);
+
+	Mix_Chunk* akarin;
+	akarin = Mix_LoadWAV("akarin.wav");
+	//Mix_Music *akarin;
+	//akarin = Mix_LoadMUS("akarin.mp3");
+
+
 	float time = 0.0f;
 	int random = 0;
 
@@ -266,10 +332,12 @@ int main(int argc, char *argv[])
 		enemyBullets[random].display = true;
 		enemyBullets[random].transform(program);
 		DrawSpriteSheetSprite(&program, 7, 3, 4, enemyBullets[random].vertices.data(), enemyBullets[random].tex);
+
 		enemyBullets[random].yDir = -1.0f;
 		enemyBullets[random].yMovement = elapsed * enemyBullets[random].speed * enemyBullets[random].yDir;
 		enemyBullets[random].y += enemyBullets[random].yMovement;
 		enemyBullets[random].matrix.Translate(0.0f, enemyBullets[random].yMovement, 0.0f);
+
 		//Enemy bullet hits player
 		if (enemyBullets[random].collidesWith(&player) && enemyBullets[random].display)
 		gameState = 2;
@@ -279,17 +347,21 @@ int main(int argc, char *argv[])
 		enemyBullets[0].display = true;
 		enemyBullets[0].transform(program);
 		DrawSpriteSheetSprite(&program, 7, 3, 4, enemyBullets[0].vertices.data(), enemyBullets[0].tex);
+
 		enemyBullets[0].yDir = -1.0f;
 		enemyBullets[0].yMovement = elapsed * enemyBullets[0].speed * enemyBullets[0].yDir;
 		enemyBullets[0].y += enemyBullets[0].yMovement;
 		enemyBullets[0].matrix.Translate(0.0f, enemyBullets[0].yMovement, 0.0f);
+
 		//Enemy bullet hits player
 		if (enemyBullets[0].collidesWith(&player) && enemyBullets[0].display)
 		gameState = 2;
 
 		}
+
 		if (time > 4.0f)
 		time = 0;
+
 		*/
 		//Title screen
 		if (gameState == 0) {
@@ -321,6 +393,12 @@ int main(int argc, char *argv[])
 				player.transform(program);
 				DrawSpriteSheetSprite(&program, 1, 3, 4, player.vertices.data(), player.tex);
 			}
+
+			//if (player2.display) {
+			//	player2.sprite = SheetSprite(player2.tex, 3, 4, player2.width, player2.height, 0.5f);
+			//	//player2.sprite.Draw(&program, player2.matrix, 1, player2.x, player2.y, player2.scale);
+			//	player2.sprite.Draw(&program, player2.matrix, 1, player2.x, player2.y);
+			//}
 
 			//Draw enemies
 			for (int i = 0; i < enemies.size(); i++) {
@@ -388,7 +466,7 @@ int main(int argc, char *argv[])
 								bullets[i].speed = 0.0f;
 								enemyCount--;
 
-								//Mix_PlayChannel(-1, akarin, 0);
+								Mix_PlayChannel(-1, akarin, 0);
 							}
 
 							enemies[j].display = false;
@@ -473,8 +551,10 @@ int main(int argc, char *argv[])
 
 		SDL_GL_SwapWindow(displayWindow);
 	}
-	//Mix_FreeMusic(chinatsu);
-	//Mix_FreeChunk(akarin);
+
+	Mix_FreeMusic(chinatsu);
+	Mix_FreeChunk(akarin);
+
 	cleanup(program);
 	return 0;
 }
