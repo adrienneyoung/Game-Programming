@@ -52,8 +52,6 @@ private:
 
 	//Entities
 	Entity* player;
-	//Entity* block;
-	vector<Entity*> blocks; //this is for testing purposes
 	vector<Entity*> staticEntities;
 
 	//Map stuff
@@ -63,4 +61,11 @@ private:
 
 	bool done = false;
 	float lastFrameTicks = 0.0f;
+
+	Matrix modelMatrixText2;
+	Matrix modelMatrixText3;
+	Matrix modelMatrixText4;
+	//Entity* block;
+	vector<Entity*> blocks; //this is for testing purposes
+	vector<Entity*> blocks2; //this is for testing purposes
 };

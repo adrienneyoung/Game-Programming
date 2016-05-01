@@ -20,6 +20,7 @@ void Entity::Update(float elapsed)
 	yPos += yVel * FIXED_TIMESTEP;
 
 	xVel += xAcc * FIXED_TIMESTEP;
+	yVel += yAcc * FIXED_TIMESTEP;
 
 	if (!isStatic) {
 		yAcc = yGrav * FIXED_TIMESTEP;
@@ -44,10 +45,10 @@ void Entity::Update(float elapsed)
 }
 
 //Jump if currently touching the ground
-void Entity::jump() {
-	if (collidedBottom)
-		yVel = 0.1f;
-}
+//void Entity::jump() {
+	//if (collidedBottom)
+		//yVel = 0.1f;
+//}
 
 bool Entity::collidesWith(Entity* block) {
 	/*
@@ -59,15 +60,49 @@ bool Entity::collidesWith(Entity* block) {
 	The rectangles are intersecting if NONE of the above are true.
 	*/
 
-	//if (bot < blockTop && top > blockBot && left < blockRight && right > blockLeft)
-	if (yPos - height / 2 < block->yPos + block->height / 2 &&
-		yPos + height / 2 > block->yPos - block->height / 2 &&
-		xPos - width / 2 < block->xPos + block->width / 2 &&
-		xPos + width / 2 > block->xPos - block->width / 2)
+	float top = yPos + height / 2;
+	float bot = yPos - height / 2;
+	float left = xPos - width / 2;
+	float right = xPos + width / 2;
+
+	float blockTop = block->yPos + block->height / 2;
+	float blockBot = block->yPos - block->height / 2;
+	float blockLeft = block->xPos - block->width / 2;
+	float blockRight = block->xPos + block->width / 2;
+
+	/*if (yPos - height / 2 < block->yPos + block->height / 2 &&
+	yPos + height / 2 > block->yPos - block->height / 2 &&
+	xPos - width / 2 < block->xPos + block->width / 2 &&
+	xPos + width / 2 > block->xPos - block->width / 2)*/
+
+	if (bot < blockTop && top > blockBot && left < blockRight && right > blockLeft)
 		return true; //there's a collision
 	return false;
 }
 
+void Entity::checkCollision(Entity* block) {
+	float top = yPos + height / 2;
+	float bot = yPos - height / 2;
+	float left = xPos - width / 2;
+	float right = xPos + width / 2;
+
+	float blockTop = block->yPos + block->height / 2;
+	float blockBot = block->yPos - block->height / 2;
+	float blockLeft = block->xPos - block->width / 2;
+	float blockRight = block->xPos + block->width / 2;
+
+	if (bot < blockTop)
+		collidedBottom = true;
+
+	else if (top > blockBot) 
+		collidedTop = true;
+
+	if (left > blockRight) 
+		collidedLeft = true;
+
+	else if (right < blockLeft) 
+		collidedRight = true;
+}
 
 void Entity::handleCollision(Entity* block) {
 	float top = yPos + height / 2;
@@ -84,6 +119,7 @@ void Entity::handleCollision(Entity* block) {
 	float xPen = 0.0f;
 	float yPen = 0.0f;
 
+	//Handles Y Collision
 	//The condition checks if the player is within the block's boundaries (blockLeft and blockRight)
 	//2.5f instead of 2.0f so that the player has to be deeper inside the block for the collision to occur
 	if (fabs(xPos - block->xPos) < (width + block->width) / 2.5f) {
@@ -91,23 +127,20 @@ void Entity::handleCollision(Entity* block) {
 			yVel = 0.0f;
 		}
 
-		//Player's bottom collided with block's center
-		if (bot > block->yPos)
-		{
-			collidedBottom = true;
+		if (yPos > block->yPos) {
+			//collidedBottom = true;
 			yPen = fabs(bot - blockTop);
 			yPos += yPen + 0.0001f;
 		}
 
-		//Player's top collided with block's center
-		else if (top < block->yPos)
-		{
-			collidedTop = true;
+		else if (yPos < block->yPos) {
+			//collidedTop = true;
 			yPen = fabs(top - blockBot);
 			yPos -= yPen + 0.0001f;
 		}
 	}
 
+	//Handles X Collision
 	//The condition checks if the player is within the block's boundaries (blockTop and blockBot)
 	//2.5f instead of 2.0f so that the player has to be deeper inside the block for the collision to occur
 	if (fabs(yPos - block->yPos) < (height + block->height) / 2.5f) {
@@ -115,18 +148,14 @@ void Entity::handleCollision(Entity* block) {
 			xVel = 0.0f;
 		}
 
-		//Player's left collided with block's center
-		if (left > block->xPos)
-		{
-			collidedLeft = true;
+		if (xPos > block->xPos) {
+			//collidedLeft = true;
 			xPen = fabs(left - blockRight);
 			xPos += xPen + 0.0001f;
 		}
 
-		//Player's right collided with block's center
-		else if (right < block->xPos)
-		{
-			collidedRight = true;
+		else if (xPos < block->xPos) {
+			//collidedRight = true;
 			xPen = fabs(right - blockLeft);
 			xPos -= xPen + 0.0001f;
 		}

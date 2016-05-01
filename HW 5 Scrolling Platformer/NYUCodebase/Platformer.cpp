@@ -201,6 +201,8 @@ void Platformer::Setup() {
 	//Animate player
 	player->runAnimationLeft = { 3, 4, 5 };
 	player->runAnimationRight = { 6, 7, 8 };
+	player->runAnimationFront = { 0, 1, 2 };
+	player->runAnimationBack = { 9, 10, 11 };
 
 	//Player's bullets
 	for (int i = 0; i < player->maxBullets; i++) {
@@ -221,15 +223,22 @@ void Platformer::Setup() {
 	}*/
 
 	//Walkway
-	for (int i = 0; i < 35; i++) {
-		Entity* block3 = new Entity(-8.5f + (i*0.5f), -2.5f, 0.5f, 0.5f, "sheet.png");
+	for (int i = 0; i < 5; i++) {
+		Entity* block3 = new Entity(-3.5f + (i*0.5f), -2.5f, 0.5f, 0.5f, "sheet.png");
 		block3->sprite = SheetSprite(block3->tex, 14, 7, block3->width, block3->height, 0.5f);
 		blocks.push_back(block3);
+	}
+
+	//Staircase
+	for (int i = 0; i < 5; i++) {
+		Entity* block3 = new Entity(-2.5f + (i*0.5f), -1.5f + (i*0.25f), 0.5f, 0.5f, "sheet.png");
+		block3->sprite = SheetSprite(block3->tex, 14, 7, block3->width, block3->height, 0.5f);
+		blocks2.push_back(block3);
 	}
 	
 	//Randomly generate blocks
 	srand(time(NULL));
-	for (int i = 0; i < 30; i++) {
+	for (int i = 0; i < 5; i++) {
 		Entity* block3 = new Entity(-5.5f + (i*0.5f), -2.5f + (rand() % 3) / 0.5f, 0.5f, 0.5f, "sheet.png");
 		block3->sprite = SheetSprite(block3->tex, 14, 7, block3->width, block3->height, 0.5f);
 		staticEntities.push_back(block3);
@@ -279,6 +288,12 @@ void Platformer::Render() {
 	else if (player->directionFacing == -1)
 		player->Render(program, player->matrix, player->runAnimationLeft[player->currentIndex]);
 
+	else if (player->directionFacing == 2)
+		player->Render(program, player->matrix, player->runAnimationFront[player->currentIndex]);
+
+	else if (player->directionFacing == -2)
+		player->Render(program, player->matrix, player->runAnimationBack[player->currentIndex]);
+
 	//Render player's bullets
 	for (int i = 0; i < player->maxBullets; i++) {
 		if (player->bullets[i]->display) {
@@ -295,19 +310,46 @@ void Platformer::Render() {
 		blocks[i]->isStatic = true;
 	}
 
+	for (int i = 0; i < blocks2.size(); i++) {
+		blocks2[i]->Render(program, blocks[i]->matrix, 30);
+		blocks2[i]->isStatic = true;
+	}
+
 	for (int i = 0; i < staticEntities.size(); i++) {
 		staticEntities[i]->Render(program, staticEntities[i]->matrix, 30);
 		staticEntities[i]->isStatic = true;
 	}
 
 	RenderLevel(); //Doesn't work
-
-	program->setModelMatrix(modelMatrixText);
+	
 	//string s = to_string(player->runAnimationRight[player->currentIndex]);
 	//string s = to_string(player->bullets[1]->xPos);
-	string s = to_string(player->xPos);
+	//string s = to_string(blocks[2]->yPos + blocks[2]->height / 2);
+
+	/*
+	//Block top
+	program->setModelMatrix(modelMatrixText);
+	modelMatrixText.setPosition(0.0f, 0.0f, 0.0f);
+	string s = to_string(blocks[1]->yPos + blocks[1]->height / 2);
 	DrawText(program, font, s, 0.2f, 0.2f);
-	//DrawText(program, font, "i love akari", 0.2f, 0.2f);
+
+	//Player bot normal
+	program->setModelMatrix(modelMatrixText2);
+	modelMatrixText2.setPosition(0.0f, -0.5f, 0.0f);
+	string s2 = to_string((player->yPos - player->height / 2));
+	DrawText(program, font, s2, 0.2f, 0.2f);
+
+	//Player bot
+	program->setModelMatrix(modelMatrixText3);
+	modelMatrixText3.setPosition(0.0f, -1.0f, 0.0f);
+	string s3 = to_string((player->yPos - player->height / 2) * 1.1f);
+	DrawText(program, font, s3, 0.2f, 0.2f);
+
+	program->setModelMatrix(modelMatrixText4);
+	modelMatrixText4.setPosition(0.0f, -1.5f, 0.0f);
+	string s4 = to_string(player->collidedBottom);
+	DrawText(program, font, s4, 0.2f, 0.2f);
+	*/
 
 	SDL_GL_SwapWindow(displayWindow);
 }
@@ -359,13 +401,44 @@ void Platformer::handleCollisions() {
 	/*if (player->collidesWith(block))
 		player->handleCollision(block);*/
 
-	for (int i = 0; i < blocks.size(); i++)
-		if (player->collidesWith(blocks[i]))
+	for (int i = 0; i < blocks.size(); i++) {
+		if (player->collidesWith(blocks[i])) {
 			player->handleCollision(blocks[i]);
+		}
+	}
 
-	for (int i = 0; i < staticEntities.size(); i++)
-		if (player->collidesWith(staticEntities[i]))
+	for (int i = 0; i < blocks.size(); i++) {
+		player->checkCollision(blocks[i]);
+
+		if (player->collidedBottom)
+			break;
+	}
+
+	for (int i = 0; i < blocks2.size(); i++) {
+		if (player->collidesWith(blocks2[i])) {
+			player->handleCollision(blocks2[i]);
+		}
+	}
+
+	for (int i = 0; i < blocks2.size(); i++) {
+		player->checkCollision(blocks2[i]);
+
+		if (player->collidedBottom)
+			break;
+	}
+
+	for (int i = 0; i < staticEntities.size(); i++) {
+		if (player->collidesWith(staticEntities[i])) {
 			player->handleCollision(staticEntities[i]);
+		}
+	}
+
+	for (int i = 0; i < staticEntities.size(); i++) {
+		player->checkCollision(staticEntities[i]);
+
+		if (player->collidedBottom)
+			break;
+	}
 }
 
 bool Platformer::Run()
@@ -389,27 +462,30 @@ bool Platformer::Run()
 
 		else if (event.type == SDL_KEYDOWN) {
 			//Jump
-			if (event.key.keysym.scancode == SDL_SCANCODE_UP) {
-				player->jump();
+			if (event.key.keysym.scancode == SDL_SCANCODE_D) {
+				if (player->collidedBottom)
+					player->yVel = 0.1f;	
 			}
 
 			///Fire bullets
-			if (event.key.keysym.scancode == SDL_SCANCODE_SPACE && player->directionFacing != 0) {
-				//If the bullet hasn't been fired yet, display it
-				if (!player->bullets[player->bulletCount]->display) {
-					player->bullets[player->bulletCount]->display = true;
-					player->bullets[player->bulletCount]->xAcc = elapsed * 15.0f * player->directionFacing;
+			if (event.key.keysym.scancode == SDL_SCANCODE_SPACE) {
+				if (player->directionFacing == 1 || player->directionFacing == -1) {
+					//If the bullet hasn't been fired yet, display it
+					if (!player->bullets[player->bulletCount]->display) {
+						player->bullets[player->bulletCount]->display = true;
+						player->bullets[player->bulletCount]->xAcc = elapsed * 15.0f * player->directionFacing;
 
-					//Bullet comes out of the front of the player
-					if (player->directionFacing == 1) 
-						player->bullets[player->bulletCount]->xPos = player->xPos + player->width / 3;
+						//Bullet comes out of the front of the player
+						if (player->directionFacing == 1)
+							player->bullets[player->bulletCount]->xPos = player->xPos + player->width / 3;
 
-					else if (player->directionFacing == -1)
-						player->bullets[player->bulletCount]->xPos = player->xPos - player->width / 3;
+						else if (player->directionFacing == -1)
+							player->bullets[player->bulletCount]->xPos = player->xPos - player->width / 3;
 
-					player->bullets[player->bulletCount]->yPos = player->yPos;
+						player->bullets[player->bulletCount]->yPos = player->yPos;
 
-					player->bullets[player->bulletCount]->matrix.setPosition(player->xPos, player->yPos, 0.0f);
+						player->bullets[player->bulletCount]->matrix.setPosition(player->xPos, player->yPos, 0.0f);
+					}
 				}
 
 				player->bulletCount++;
@@ -434,14 +510,17 @@ bool Platformer::Run()
 		player->xAcc = elapsed * -2.0f;
 		player->directionFacing = -1;
 	}
-
-	/*else if (keys[SDL_SCANCODE_UP]) {
-		player->yAcc = elapsed * 5;
+	
+	//For player and block collision testing
+	else if (keys[SDL_SCANCODE_UP]) {
+		player->yAcc = elapsed * 2.0f;
+		player->directionFacing = 2;
 	}
 
 	else if (keys[SDL_SCANCODE_DOWN]) {
-		player->yAcc = elapsed * -5;
-	}*/
+		player->yAcc = elapsed * -2.0f;
+		player->directionFacing = -2;
+	}
 
 	else if (keys == SDL_GetKeyboardState(NULL)) {
 		player->xVel = lerp(player->xVel, 0.0f, FIXED_TIMESTEP * player->xFric);

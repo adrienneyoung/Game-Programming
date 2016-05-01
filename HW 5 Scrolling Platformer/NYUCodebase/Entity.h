@@ -9,9 +9,10 @@ public:
 	void Update(float elapsed);
 	void Render(ShaderProgram* program, Matrix& matrix, int index);
 
-	void jump();
+	//void jump();
 
 	bool collidesWith(Entity* block);
+	void checkCollision(Entity* block);
 	void handleCollision(Entity* block);
 
 	//Texture stuff
@@ -36,10 +37,12 @@ public:
 	//Friction
 	float xFric = 0.4f;
 	float yFric = 0.0f;
+	//float yFric = 0.4f;
 
 	//Gravity
 	float xGrav = 0.0f;
 	float yGrav = -0.5f; 
+	//float yGrav = 0.0f;
 
 	//Collision detection
 	bool collidedTop;
@@ -55,6 +58,9 @@ public:
 	//Animate player
 	vector<int> runAnimationLeft;
 	vector<int> runAnimationRight;
+	vector<int> runAnimationFront;
+	vector<int> runAnimationBack;
+
 	const int numFrames = 3;
 	float animationElapsed = 0.0f;
 	float framesPerSecond = 10.0f;
