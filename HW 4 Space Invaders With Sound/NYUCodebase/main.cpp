@@ -172,14 +172,14 @@ int main(int argc, char *argv[])
 	projectionMatrix.setOrthoProjection(-3.55f, 3.55f, -2.0f, 2.0f, -1.0f, 1.0f);
 
 	//Music
-	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
+	//Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
 
-	Mix_Music* chinatsu;
-	chinatsu = Mix_LoadMUS("chinatsu.mp3");
-	Mix_PlayMusic(chinatsu, -1);
+	//Mix_Music* chinatsu;
+	//chinatsu = Mix_LoadMUS("chinatsu.mp3");
+	//Mix_PlayMusic(chinatsu, -1);
 
-	Mix_Chunk* akarin;
-	akarin = Mix_LoadWAV("akarin.wav");
+	//Mix_Chunk* akarin;
+	//akarin = Mix_LoadWAV("akarin.wav");
 	//Mix_Music *akarin;
 	//akarin = Mix_LoadMUS("akarin.mp3");
 
@@ -388,7 +388,7 @@ int main(int argc, char *argv[])
 								bullets[i].speed = 0.0f;
 								enemyCount--;
 
-								Mix_PlayChannel(-1, akarin, 0);
+								//Mix_PlayChannel(-1, akarin, 0);
 							}
 
 							enemies[j].display = false;
@@ -473,8 +473,8 @@ int main(int argc, char *argv[])
 
 		SDL_GL_SwapWindow(displayWindow);
 	}
-	Mix_FreeMusic(chinatsu);
-	Mix_FreeChunk(akarin);
+	//Mix_FreeMusic(chinatsu);
+	//Mix_FreeChunk(akarin);
 	cleanup(program);
 	return 0;
 }

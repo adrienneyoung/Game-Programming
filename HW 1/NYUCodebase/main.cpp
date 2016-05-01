@@ -57,6 +57,7 @@ int main(int argc, char *argv[])
 	Matrix modelMatrixBun1;
 	Matrix modelMatrixBun2;
 	Matrix modelMatrixAkari;
+	Matrix bgMatrix;
 	Matrix viewMatrix;
 	projectionMatrix.setOrthoProjection(-3.55, 3.55, -2.0f, 2.0f, -1.0f, 1.0f);
 
@@ -64,6 +65,7 @@ int main(int argc, char *argv[])
 	GLuint bun1Tex = LoadTexture("bun.png");
 	GLuint bun2Tex = LoadTexture("bun.png");
 	GLuint akariTex = LoadTexture("akari2.png");
+	GLuint bgTex = LoadTexture("bg.png");
 
 	//float bun1[] = { -3.0f, -2.0f, -1.0f, -2.0f, -1.0f, -0.5f, -3.0f, -2.0f, -1.0f, -0.5f, -3.0f, -0.5f };
 	//float bun1[] = { 1.0f, 0.0f, 3.0f, 0.0f, 3.0f, 1.0f, 1.0f, 0.0f, 3.0f, 1.0f, 1.0f, 1.0f };
@@ -75,6 +77,7 @@ int main(int argc, char *argv[])
 	float bun1[] = { 1.5f, 0.0f, 3.5f, 0.0f, 3.5f, 2.0f, 1.5f, 0.0f, 3.5f, 2.0f, 1.5f, 2.0f };
 	float bun2[] = { -1.5f, 0.0f, -1.5f, 2.0f, -3.5f, 2.0f, -1.5f, 0.0f, -3.5f, 2.0f, -3.5f, 0.0f };
 	float akari[] = { -1.5f, -3.0f, 1.5f, -3.0f, 1.5f, -1.0f, -1.5f, -3.0f, 1.5f, -1.0f, -1.5f, -1.0f };
+	float bg[] = { -4.0f, -4.0f, 4.0f, -4.0f, 4.0f, 4.0f, -4.0f, -4.0f, 4.0f, 4.0f, -4.0f, 4.0f };
 	float texCoords[] = { 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0 };
 
 	float lastFrameTicks = 0.0f;
@@ -91,7 +94,6 @@ int main(int argc, char *argv[])
 		glClearColor(0.8f, 0.7f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		program.setModelMatrix(modelMatrixAkane);
 		program.setProjectionMatrix(projectionMatrix);
 		program.setViewMatrix(viewMatrix);
 
@@ -99,7 +101,16 @@ int main(int argc, char *argv[])
 		float elapsed = ticks - lastFrameTicks;
 		lastFrameTicks = ticks;
 
+		//BG
+		program.setModelMatrix(bgMatrix);
+		glBindTexture(GL_TEXTURE_2D, bgTex);
+		glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, bg);
+		glEnableVertexAttribArray(program.positionAttribute);
+		glEnableVertexAttribArray(program.texCoordAttribute);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
 		//Akane
+		program.setModelMatrix(modelMatrixAkane);
 		glBindTexture(GL_TEXTURE_2D, akaneTex);
 		glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, akane);
 		glEnableVertexAttribArray(program.positionAttribute);
