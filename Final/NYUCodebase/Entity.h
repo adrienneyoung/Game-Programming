@@ -5,6 +5,7 @@ class Entity {
 public:
 	Entity();
 	Entity(float xPos, float yPos, float width, float height, const char* texPath);
+	Entity(float xPos, float yPos, float width, float height, const char* texPath, const char* texPath2);
 
 	void Animate(float elapsed);
 	void Update(float elapsed);
@@ -19,6 +20,7 @@ public:
 	//Texture stuff
 	Matrix matrix;
 	GLuint tex;
+	GLuint tex2;
 	SheetSprite sprite;
 
 	//(xPos,yPos) is the center of the entity
@@ -36,12 +38,12 @@ public:
 	float yAcc = 0.0f;
 
 	//Friction
-	float xFric = 0.4f;
+	float xFric = 0.5f;
 	float yFric = 0.0f;
 
 	//Gravity
 	float xGrav = 0.0f;
-	float yGrav = -0.5f; 
+	float yGrav = -0.6f; 
 
 	//Collision detection
 	bool collidedTop;
@@ -57,8 +59,10 @@ public:
 	//Animate player
 	vector<int> runAnimationLeft;
 	vector<int> runAnimationRight;
+	vector<int> runAnimationFront;
+	vector<int> runAnimationBack;
 
-	int numFrames;
+	int numFrames = 3;
 	float animationElapsed = 0.0f;
 	float framesPerSecond = 10.0f;
 	int currentIndex = 0;

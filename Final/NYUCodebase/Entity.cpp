@@ -1,8 +1,15 @@
 #include "Entity.h"
 
 Entity::Entity() {}
+
 Entity::Entity(float xPos, float yPos, float width, float height, const char* texPath)
 	: xPos(xPos), yPos(yPos), width(width), height(height) { tex = LoadTexture(texPath); }
+
+Entity::Entity(float xPos, float yPos, float width, float height, const char* texPath, const char* texPath2)
+	: xPos(xPos), yPos(yPos), width(width), height(height) {
+	tex = LoadTexture(texPath);
+	tex2 = LoadTexture(texPath2);
+}
 
 //Draws entity using SpriteSheet::Draw
 void Entity::Render(ShaderProgram* program, Matrix& matrix, int index) {
@@ -27,18 +34,21 @@ void Entity::Update(float elapsed)
 	collidedLeft = false;
 	collidedRight = false;
 
-	xPos += xVel * FIXED_TIMESTEP;
-	yPos += yVel * FIXED_TIMESTEP;
-
-	xVel += xAcc * FIXED_TIMESTEP;
-	yVel += yAcc * FIXED_TIMESTEP;
-
 	if (!isStatic) {
-		yAcc = yGrav * FIXED_TIMESTEP;
+		xPos += xVel * FIXED_TIMESTEP;
+		yPos += yVel * FIXED_TIMESTEP;
+
+		xVel += xAcc * FIXED_TIMESTEP;
 		yVel += yAcc * FIXED_TIMESTEP;
+
+		yAcc = yGrav * FIXED_TIMESTEP;
 	}
 
 	if (isBullet) {
+		//Bullets don't accelerate (xAcc is 0 and yAcc is 0)
+		//yPos is always the same as the point it was fired at (height of the player's head)
+		//yVel is 0
+
 		yGrav = 0.0f;
 		xFric = 0.0f;
 	}
