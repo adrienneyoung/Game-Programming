@@ -17,9 +17,11 @@ public:
 	void scrollScreen();
 	void handleCollisions();
 
-	void Setup();
-	void Render();
-	void Update(float elapsed);
+	void SwitchGameStates(float elapsed);
+	void RenderMainMenu();
+	void GameSetup();
+	void RenderGameLevel();
+	void UpdateGameLevel(float elapsed);
 	bool Run();
 
 	void buildLevel();
@@ -31,17 +33,20 @@ public:
 
 private:
 	SDL_Window* displayWindow;
-
 	ShaderProgram* program;
-
+	SDL_Event event;
 	Mix_Music* music;
+
+	int state;
 
 	//Matrices
 	Matrix projectionMatrix;
 	Matrix viewMatrix;
-	Matrix modelMatrixText;
-	Matrix modelMatrix;
 	Matrix backgroundMatrix;
+
+	Matrix mainMenuText;
+	Matrix mainMenuText2;
+	Matrix gameText;
 
 	GLuint font;
 	GLuint spritesheet;
@@ -51,6 +56,7 @@ private:
 	vector<float> texCoords;
 
 	//Entities
+	Entity* pug;
 	Entity* player;
 	vector<Entity*> staticEntities;
 

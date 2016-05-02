@@ -26,7 +26,7 @@ using namespace std;
 
 GLuint LoadTexture(const char *image_path);
 
-void DrawText(ShaderProgram *program, int fontTexture, std::string text, float size, float spacing);
+void DrawText(ShaderProgram *program, Matrix& matrix, int fontTexture, std::string text, float size, float spacing, float x, float y);
 
 class SheetSprite
 {

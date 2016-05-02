@@ -18,29 +18,24 @@ GLuint LoadTexture(const char *image_path) {
 	return textureID;
 }
 
-void DrawText(ShaderProgram *program, int fontTexture, std::string text, float size, float spacing) {
+void DrawText(ShaderProgram *program, Matrix& matrix, int fontTexture, std::string text, float size, float spacing, float x, float y) {
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+	
 	float texture_size = 1.0 / 16.0f;
 	std::vector<float> vertexData;
 	std::vector<float> texCoordData;
 	for (int i = 0; i < text.size(); i++) {
 		float texture_x = (float)(((int)text[i]) % 16) / 16.0f;
 		float texture_y = (float)(((int)text[i]) / 16) / 16.0f;
-		/*vertexData.insert(vertexData.end(), {
-			((size + spacing) * i) + (-7.55f * size), 0.5f * size,
-			((size + spacing) * i) + (-7.55f * size), -0.5f * size,
-			((size + spacing) * i) + (-6.55f * size), 0.5f * size,
-			((size + spacing) * i) + (-6.55f * size), -0.5f * size,
-			((size + spacing) * i) + (-6.55f * size), 0.5f * size,
-			((size + spacing) * i) + (-7.55f * size), -0.5f * size,
-		});*/
 
 		vertexData.insert(vertexData.end(), {
-			((size + spacing) * i) + (-7.55f * size), -1.5f * size,
-			((size + spacing) * i) + (-7.55f * size), -2.5f * size,
-			((size + spacing) * i) + (-6.55f * size), -1.5f * size,
-			((size + spacing) * i) + (-6.55f * size), -2.5f * size,
-			((size + spacing) * i) + (-6.55f * size), -1.5f * size,
-			((size + spacing) * i) + (-7.55f * size), -2.5f * size,
+			((size + spacing) * i) + (-0.5f * size), 0.5f * size,
+			((size + spacing) * i) + (-0.5f * size), -0.5f * size,
+			((size + spacing) * i) + (0.5f * size), 0.5f * size,
+			((size + spacing) * i) + (0.5f * size), -0.5f * size,
+			((size + spacing) * i) + (0.5f * size), 0.5f * size,
+			((size + spacing) * i) + (-0.5f * size), -0.5f * size,
 		});
 
 		texCoordData.insert(texCoordData.end(), {
@@ -53,12 +48,19 @@ void DrawText(ShaderProgram *program, int fontTexture, std::string text, float s
 		});
 	}
 	glUseProgram(program->programID);
+
 	glVertexAttribPointer(program->positionAttribute, 2, GL_FLOAT, false, 0, vertexData.data());
 	glEnableVertexAttribArray(program->positionAttribute);
+
 	glVertexAttribPointer(program->texCoordAttribute, 2, GL_FLOAT, false, 0, texCoordData.data());
 	glEnableVertexAttribArray(program->texCoordAttribute);
+
+	program->setModelMatrix(matrix);
+	matrix.setPosition(x, y, 0.0f);
+
 	glBindTexture(GL_TEXTURE_2D, fontTexture);
 	glDrawArrays(GL_TRIANGLES, 0, text.size() * 6);
+
 	glDisableVertexAttribArray(program->positionAttribute);
 	glDisableVertexAttribArray(program->texCoordAttribute);
 }

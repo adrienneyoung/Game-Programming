@@ -6,6 +6,7 @@ public:
 	Entity();
 	Entity(float xPos, float yPos, float width, float height, const char* texPath);
 
+	void Animate(float elapsed);
 	void Update(float elapsed);
 	void Render(ShaderProgram* program, Matrix& matrix, int index);
 
@@ -57,7 +58,7 @@ public:
 	vector<int> runAnimationLeft;
 	vector<int> runAnimationRight;
 
-	const int numFrames = 3;
+	int numFrames;
 	float animationElapsed = 0.0f;
 	float framesPerSecond = 10.0f;
 	int currentIndex = 0;

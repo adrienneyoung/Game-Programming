@@ -9,6 +9,17 @@ void Entity::Render(ShaderProgram* program, Matrix& matrix, int index) {
 	sprite.Draw(program, matrix, index, xPos, yPos);
 }
 
+void Entity::Animate(float elapsed) {
+	animationElapsed += elapsed;
+	if (animationElapsed > 1.0 / framesPerSecond) {
+		currentIndex++;
+		animationElapsed = 0.0;
+		if (currentIndex > numFrames - 1) {
+			currentIndex = 0;
+		}
+	}
+}
+
 void Entity::Update(float elapsed)
 {
 	collidedTop = false;
@@ -27,21 +38,12 @@ void Entity::Update(float elapsed)
 		yVel += yAcc * FIXED_TIMESTEP;
 	}
 
-	//Player walking animation
-	animationElapsed += elapsed;
-	if (animationElapsed > 1.0 / framesPerSecond) {
-		currentIndex++;
-		animationElapsed = 0.0;
-		if (currentIndex > numFrames - 1) {
-			currentIndex = 0;
-		}
-	}
-
 	if (isBullet) {
 		yGrav = 0.0f;
 		xFric = 0.0f;
 	}
-	
+
+	Animate(elapsed);
 }
 
 //Jump if currently touching the ground
