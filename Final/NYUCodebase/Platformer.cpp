@@ -1,4 +1,5 @@
 #include "Platformer.h"
+enum GameState { MAIN_MENU, GAME_LEVEL, GAME_WIN, GAME_LOSE };
 
 void Platformer::buildLevel() {
 	ifstream infile("map.txt");
@@ -184,25 +185,15 @@ Platformer::~Platformer()
 	SDL_Quit();
 }
 
-void Platformer::scrollScreen()
-{
-	viewMatrix.identity();
-	/*if (player->xPos > -3.39999f && player->yPos > -1.49999f)
-	viewMatrix.Translate(-(player->xPos), -(player->yPos), 0.0f);
-	else
-	viewMatrix.setPosition(3.4f, 1.5f, 0.0f);*/
-
-	if (player->yPos > -1.49999f)
-		viewMatrix.Translate(-(player->xPos), -(player->yPos), 0.0f);
-	else
-		viewMatrix.setPosition(-(player->xPos), 1.5f, 0.0f);
-
-	program->setViewMatrix(viewMatrix);
-
-	//make it not scroll past a certain point so bg img will always be visible
-}
-
 void Platformer::Setup() {
+	//Pug
+	pug = new Entity(0.0f, -0.9f, 3.5f, 2.0f, "pug.png");
+	pug->sprite = SheetSprite(pug->tex, 4, 1, pug->width, pug->height, 2.0f);
+
+	//Animate pug
+	pug->runAnimationLeft = { 0, 1, 2, 3 };
+	pug->numFrames = 4;
+
 	//Player
 	//player = new Entity(-2.0f, 1.5f, 1.0f, 1.0f, "akarispritesheet.png");
 	//player->sprite = SheetSprite(player->tex, 3, 4, player->width, player->height, 1.0f);
@@ -220,11 +211,17 @@ void Platformer::Setup() {
 	player->runAnimationFront = { 3, 4, 5 };
 
 	//Player's bullets
-	for (int i = 0; i < player->maxBullets; i++) {
+	/*for (int i = 0; i < player->maxBullets; i++) {
 		Entity* bullet = new Entity(player->xPos, player->yPos, 0.25f, 0.25f, "bun.png");
 		bullet->sprite = SheetSprite(bullet->tex, 1, 1, bullet->width, bullet->height, 0.5f);
 		bullet->isBullet = true;
-		//bullet->xVel = 0.3f;
+		player->bullets.push_back(bullet);
+	}*/
+
+	for (int i = 0; i < player->maxBullets; i++) {
+		Entity* bullet = new Entity(player->xPos, player->yPos, 0.5f, 0.25f, "stick.png");
+		bullet->sprite = SheetSprite(bullet->tex, 1, 1, bullet->width, bullet->height, 0.5f);
+		bullet->isBullet = true;
 		player->bullets.push_back(bullet);
 	}
 
@@ -258,80 +255,119 @@ void Platformer::Render() {
 	program->setProjectionMatrix(projectionMatrix);
 	program->setViewMatrix(viewMatrix);
 
-	//Render background
-	program->setModelMatrix(backgroundMatrix);
-	glBindTexture(GL_TEXTURE_2D, background);
-	glVertexAttribPointer(program->positionAttribute, 2, GL_FLOAT, false, 0, vertices.data());
-	glVertexAttribPointer(program->texCoordAttribute, 2, GL_FLOAT, false, 0, texCoords.data());
-	glEnableVertexAttribArray(program->positionAttribute);
-	glEnableVertexAttribArray(program->texCoordAttribute);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	backgroundMatrix.setScale(7.0f, 3.5f, 1.0f);
-
-	//Render player
-	/*if (player->directionFacing == 0)
-		player->Render(program, player->matrix, 1);
-
-	else if (player->directionFacing == 1)
-		player->Render(program, player->matrix, player->runAnimationRight[player->currentIndex]);
-
-	else if (player->directionFacing == -1)
-		player->Render(program, player->matrix, player->runAnimationLeft[player->currentIndex]);*/
-
-	if (player->directionFacing == 0) {
-		player->sprite = SheetSprite(player->tex2, 3, 2, player->width, player->height, 1.0f);
-		player->Render(program, player->matrix, 3);
+	if (state == MAIN_MENU) {
+		DrawText(program, mainMenuText, font, "ANGRY DOGS", 0.4f, 0.2f, -2.6f, 1.0f);
+		DrawText(program, mainMenuText2, font, "Press space to start", 0.2f, 0.1f, -2.7f, 0.3f);
+		pug->Render(program, pug->matrix, pug->runAnimationLeft[pug->currentIndex]);
 	}
+	
+	else if (state == GAME_LEVEL) {
+		//Render background
+		program->setModelMatrix(backgroundMatrix);
+		glBindTexture(GL_TEXTURE_2D, background);
+		glVertexAttribPointer(program->positionAttribute, 2, GL_FLOAT, false, 0, vertices.data());
+		glVertexAttribPointer(program->texCoordAttribute, 2, GL_FLOAT, false, 0, texCoords.data());
+		glEnableVertexAttribArray(program->positionAttribute);
+		glEnableVertexAttribArray(program->texCoordAttribute);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		backgroundMatrix.setScale(7.0f, 3.5f, 1.0f);
 
-	else if (player->directionFacing == 1) {
-		player->sprite = SheetSprite(player->tex, 3, 2, player->width, player->height, 1.0f);
-		player->Render(program, player->matrix, player->runAnimationRight[player->currentIndex]);
-	}
+		//Render player
+		/*if (player->directionFacing == 0)
+			player->Render(program, player->matrix, 1);
 
-	else if (player->directionFacing == -1) {
-		player->sprite = SheetSprite(player->tex, 3, 2, player->width, player->height, 1.0f);
-		player->Render(program, player->matrix, player->runAnimationLeft[player->currentIndex]); 
-	}
+			else if (player->directionFacing == 1)
+			player->Render(program, player->matrix, player->runAnimationRight[player->currentIndex]);
 
-	//Render player's bullets
-	for (int i = 0; i < player->maxBullets; i++) {
-		if (player->bullets[i]->display) {
-			player->bullets[i]->matrix.setScale(0.5f, 0.5f, 1.0f);
-			player->bullets[i]->Render(program, player->bullets[i]->matrix, 0);
+			else if (player->directionFacing == -1)
+			player->Render(program, player->matrix, player->runAnimationLeft[player->currentIndex]);*/
+
+		if (player->directionFacing == 0) {
+			player->sprite = SheetSprite(player->tex2, 3, 2, player->width, player->height, 1.0f);
+			player->Render(program, player->matrix, 3);
 		}
+
+		else if (player->directionFacing == 1) {
+			player->sprite = SheetSprite(player->tex, 3, 2, player->width, player->height, 1.0f);
+			player->Render(program, player->matrix, player->runAnimationRight[player->currentIndex]);
+		}
+
+		else if (player->directionFacing == -1) {
+			player->sprite = SheetSprite(player->tex, 3, 2, player->width, player->height, 1.0f);
+			player->Render(program, player->matrix, player->runAnimationLeft[player->currentIndex]);
+		}
+
+		//Render player's bullets
+		for (int i = 0; i < player->maxBullets; i++) {
+			if (player->bullets[i]->display) {
+				player->bullets[i]->matrix.setScale(0.5f, 0.5f, 1.0f);
+				player->bullets[i]->Render(program, player->bullets[i]->matrix, 0);
+			}
+		}
+
+		//Render walkway
+		for (int i = 0; i < blocks.size(); i++) {
+			blocks[i]->Render(program, blocks[i]->matrix, 1);
+			blocks[i]->isStatic = true;
+		}
+
+		RenderLevel(); //Doesn't work
+
+		string s = to_string(player->bullets[0]->xPos - player->bullets[0]->xVel * FIXED_TIMESTEP);
+		DrawText(program, gameText, font, "xPos: " + s, 0.2f, 0.2f, 0.0f, -0.5f);
+
+		string s2 = to_string(player->bullets[0]->xVel * FIXED_TIMESTEP);
+		DrawText(program, gameText, font, "xVel: " + s2, 0.2f, 0.2f, 0.0f, -1.0f);
+
 	}
-
-	//Render walkway
-	for (int i = 0; i < blocks.size(); i++) {
-		blocks[i]->Render(program, blocks[i]->matrix, 1);
-		blocks[i]->isStatic = true;
-	}
-
-	RenderLevel(); //Doesn't work
-
-	string s = to_string(player->xPos);
-	DrawText(program, modelMatrixText, font, s, 0.2f, 0.2f, 0.0f, -0.5f);
 
 	SDL_GL_SwapWindow(displayWindow);
 }
 
+void Platformer::scrollScreen()
+{
+	viewMatrix.identity();
+	/*if (player->xPos > -3.39999f && player->yPos > -1.49999f)
+	viewMatrix.Translate(-(player->xPos), -(player->yPos), 0.0f);
+	else
+	viewMatrix.setPosition(3.4f, 1.5f, 0.0f);*/
+
+	if (player->yPos > -1.49999f)
+		viewMatrix.Translate(-(player->xPos), -(player->yPos), 0.0f);
+	else
+		viewMatrix.setPosition(-(player->xPos), 1.5f, 0.0f);
+
+	program->setViewMatrix(viewMatrix);
+
+	//make it not scroll past a certain point so bg img will always be visible
+}
+
 void Platformer::Update(float elapsed) {
-	player->Update(elapsed);
+	if (state == MAIN_MENU)
+		pug->Animate(elapsed);
 
-	//Player's bullets
-	for (int i = 0; i < player->maxBullets; i++)
-	{
-		player->bullets[i]->Update(elapsed);
-		//bullet collision
+	else if (state == GAME_LEVEL) {
+		mainMenuText.identity();
+		mainMenuText2.identity();
+		pug->matrix.identity();
 
-		if (player->bullets[i]->xPos > 6.0f || player->bullets[i]->xPos < -10.0f) {
-			player->bullets[i]->display = false;
-			player->bullets[i]->xVel = 0.0f;
+		player->Update(elapsed);
+
+		//Player's bullets
+		for (int i = 0; i < player->maxBullets; i++)
+		{
+			player->bullets[i]->Update(elapsed);
+			//bullet collision
+
+			if (player->bullets[i]->xPos > 6.0f || player->bullets[i]->xPos < -10.0f) {
+				player->bullets[i]->display = false;
+				player->bullets[i]->xVel = 0.0f;
+			}
 		}
-	}
 
-	scrollScreen();
-	handleCollisions();
+		scrollScreen();
+		handleCollisions();
+	}
 }
 
 void Platformer::handleCollisions() {
@@ -369,29 +405,31 @@ bool Platformer::Run()
 		}
 
 		else if (event.type == SDL_KEYDOWN) {
+			if (event.key.keysym.scancode == SDL_SCANCODE_SPACE && state == MAIN_MENU)
+				state = GAME_LEVEL;
+
 			//Jump
-			if (event.key.keysym.scancode == SDL_SCANCODE_UP) {
+			if (event.key.keysym.scancode == SDL_SCANCODE_UP  && state == GAME_LEVEL) {
 				if (player->collidedBottom)
 					player->yVel = 0.1f;
 			}
 
 			///Fire bullets
-			if (event.key.keysym.scancode == SDL_SCANCODE_SPACE) {
+			if (event.key.keysym.scancode == SDL_SCANCODE_SPACE && state == GAME_LEVEL) {
 				if (player->directionFacing == 1 || player->directionFacing == -1) {
 					//If the bullet hasn't been fired yet, display it
 					if (!player->bullets[player->bulletCount]->display) {
 						player->bullets[player->bulletCount]->display = true;
-						//player->bullets[player->bulletCount]->xAcc = elapsed * 25.0f * player->directionFacing;
 
 						//Bullet comes out of the front of the player
 						if (player->directionFacing == 1) {
-							player->bullets[player->bulletCount]->xPos = player->xPos + player->width / 3;
+							player->bullets[player->bulletCount]->xPos = player->xPos + player->width / 2 + player->bullets[player->bulletCount]->width / 2;
 							player->bullets[player->bulletCount]->xVel = 0.3f;
 							player->bullets[player->bulletCount]->xPos += player->bullets[player->bulletCount]->xVel * FIXED_TIMESTEP;
 						}
 
 						else if (player->directionFacing == -1) {
-							player->bullets[player->bulletCount]->xPos = player->xPos - player->width / 3;
+							player->bullets[player->bulletCount]->xPos = player->xPos - player->width / 2 - player->bullets[player->bulletCount]->width / 2;
 							player->bullets[player->bulletCount]->xVel = -0.3f;
 							player->bullets[player->bulletCount]->xPos -= player->bullets[player->bulletCount]->xVel * FIXED_TIMESTEP;
 						}

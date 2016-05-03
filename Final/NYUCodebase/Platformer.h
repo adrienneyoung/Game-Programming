@@ -31,17 +31,18 @@ public:
 
 private:
 	SDL_Window* displayWindow;
-
 	ShaderProgram* program;
-
 	Mix_Music* music;
+	int state;
 
 	//Matrices
 	Matrix projectionMatrix;
 	Matrix viewMatrix;
-	Matrix modelMatrixText;
-	Matrix modelMatrix;
 	Matrix backgroundMatrix;
+
+	Matrix mainMenuText;
+	Matrix mainMenuText2;
+	Matrix gameText;
 
 	GLuint font;
 	GLuint spritesheet;
@@ -51,6 +52,7 @@ private:
 	vector<float> texCoords;
 
 	//Entities
+	Entity* pug;
 	Entity* player;
 	vector<Entity*> staticEntities;
 
