@@ -51,6 +51,7 @@ void Entity::Update(float elapsed)
 
 		yGrav = 0.0f;
 		xFric = 0.0f;
+		matrix.Rotate(-elapsed * 20.0f);
 	}
 
 	Animate(elapsed);

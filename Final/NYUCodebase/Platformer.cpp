@@ -219,8 +219,8 @@ void Platformer::Setup() {
 	}*/
 
 	for (int i = 0; i < player->maxBullets; i++) {
-		Entity* bullet = new Entity(player->xPos, player->yPos, 0.5f, 0.25f, "stick.png");
-		bullet->sprite = SheetSprite(bullet->tex, 1, 1, bullet->width, bullet->height, 0.5f);
+		Entity* bullet = new Entity(player->xPos, player->yPos, 0.3f, 0.15f, "stick.png");
+		bullet->sprite = SheetSprite(bullet->tex, 1, 1, bullet->width, bullet->height, 0.25f);
 		bullet->isBullet = true;
 		player->bullets.push_back(bullet);
 	}
@@ -300,7 +300,7 @@ void Platformer::Render() {
 		//Render player's bullets
 		for (int i = 0; i < player->maxBullets; i++) {
 			if (player->bullets[i]->display) {
-				player->bullets[i]->matrix.setScale(0.5f, 0.5f, 1.0f);
+				//player->bullets[i]->matrix.setScale(0.5f, 0.5f, 1.0f);
 				player->bullets[i]->Render(program, player->bullets[i]->matrix, 0);
 			}
 		}
@@ -313,12 +313,13 @@ void Platformer::Render() {
 
 		RenderLevel(); //Doesn't work
 
-		string s = to_string(player->bullets[0]->xPos - player->bullets[0]->xVel * FIXED_TIMESTEP);
+		string s = to_string(player->xPos);
 		DrawText(program, gameText, font, "xPos: " + s, 0.2f, 0.2f, 0.0f, -0.5f);
+		gameText.setPosition(-8.0f, 0.0f, 1.0f);
+	}
 
-		string s2 = to_string(player->bullets[0]->xVel * FIXED_TIMESTEP);
-		DrawText(program, gameText, font, "xVel: " + s2, 0.2f, 0.2f, 0.0f, -1.0f);
-
+	else if (state = GAME_LOSE) {
+		DrawText(program, gameText, font, "You died", 0.2f, 0.2f, 5.0f, -0.5f);
 	}
 
 	SDL_GL_SwapWindow(displayWindow);
@@ -332,14 +333,17 @@ void Platformer::scrollScreen()
 	else
 	viewMatrix.setPosition(3.4f, 1.5f, 0.0f);*/
 
-	if (player->yPos > -1.49999f)
-		viewMatrix.Translate(-(player->xPos), -(player->yPos), 0.0f);
-	else
+	if (player->yPos < -1.49999f)
+		//viewMatrix.Translate(-(player->xPos), -(player->yPos), 0.0f);
 		viewMatrix.setPosition(-(player->xPos), 1.5f, 0.0f);
+	//if (player->xPos < -3.29999f)
+	//	viewMatrix.setPosition(-3.3f, -(player->yPos), 0.0f);
+	//else
+	//	viewMatrix.setPosition(-(player->xPos), 1.5f, 0.0f);
+	else
+		viewMatrix.Translate(-(player->xPos), -(player->yPos), 0.0f);
 
 	program->setViewMatrix(viewMatrix);
-
-	//make it not scroll past a certain point so bg img will always be visible
 }
 
 void Platformer::Update(float elapsed) {
@@ -357,6 +361,7 @@ void Platformer::Update(float elapsed) {
 		for (int i = 0; i < player->maxBullets; i++)
 		{
 			player->bullets[i]->Update(elapsed);
+
 			//bullet collision
 
 			if (player->bullets[i]->xPos > 6.0f || player->bullets[i]->xPos < -10.0f) {
@@ -364,6 +369,9 @@ void Platformer::Update(float elapsed) {
 				player->bullets[i]->xVel = 0.0f;
 			}
 		}
+
+		if (player->yPos < -5.0f)
+			state = GAME_LOSE;
 
 		scrollScreen();
 		handleCollisions();
