@@ -226,7 +226,7 @@ void Platformer::Setup() {
 	}
 
 	//Walkway
-	for (int i = 0; i < 25; i++) {
+	for (int i = 0; i < 35; i++) {
 		Entity* block3 = new Entity(-8.5f + (i*0.5f), -3.25f, 0.5f, 0.5f, "sheet.png");
 		block3->sprite = SheetSprite(block3->tex, 14, 7, block3->width, block3->height, 0.5f);
 		blocks.push_back(block3);

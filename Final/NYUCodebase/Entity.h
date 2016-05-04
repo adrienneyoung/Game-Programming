@@ -38,12 +38,12 @@ public:
 	float yAcc = 0.0f;
 
 	//Friction
-	float xFric = 0.5f;
+	float xFric = 0.7f;
 	float yFric = 0.0f;
 
 	//Gravity
 	float xGrav = 0.0f;
-	float yGrav = -0.6f; 
+	float yGrav = -20.0f; 
 
 	//Collision detection
 	bool collidedTop;
