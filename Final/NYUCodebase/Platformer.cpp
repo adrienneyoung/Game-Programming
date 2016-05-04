@@ -244,6 +244,31 @@ void Platformer::Setup() {
 	//Main music
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
 	music = Mix_LoadMUS("fate.mp3");
+	//music = Mix_LoadMUS("fate2.mp3");
+	//music = Mix_LoadMUS("fate3.mp3");
+	//music = Mix_LoadMUS("fate4.mp3");
+	//music = Mix_LoadMUS("fate5.mp3"); 
+
+	//music = Mix_LoadMUS("homura.mp3"); 
+	//music = Mix_LoadMUS("sayaka.mp3"); 
+	//music = Mix_LoadMUS("pmmm.mp3"); 
+	//music = Mix_LoadMUS("pmmm2.mp3"); I REALLY LIKE THIS ONE. I THINK IT WAS PLAYED WHEN HOMURA WAS FIGHTING THE HUGE BOSS WITCH
+	//music = Mix_LoadMUS("pmmm3.mp3"); THIS ONE IS KIND OF CREEPY 
+
+	//music = Mix_LoadMUS("knk.mp3");
+	//music = Mix_LoadMUS("knk2.mp3"); I LIKE THIS ONE A LOT
+	//music = Mix_LoadMUS("knk3.mp3"); THIS ONE IS REALLY GOOD
+
+	//music = Mix_LoadMUS("klk.mp3");
+	//music = Mix_LoadMUS("klk2.mp3");
+
+	//music = Mix_LoadMUS("snk.mp3");
+	//music = Mix_LoadMUS("snk2.mp3");
+
+	//CREEPY SONGS
+	//music = Mix_LoadMUS("drrr.mp3");
+	//music = Mix_LoadMUS("drrr2.mp3");
+
 	Mix_PlayMusic(music, -1);
 }
 
@@ -432,13 +457,13 @@ bool Platformer::Run()
 						//Bullet comes out of the front of the player
 						if (player->directionFacing == 1) {
 							player->bullets[player->bulletCount]->xPos = player->xPos + player->width / 2 + player->bullets[player->bulletCount]->width / 2;
-							player->bullets[player->bulletCount]->xVel = 0.3f;
+							player->bullets[player->bulletCount]->xVel = 0.5f;
 							player->bullets[player->bulletCount]->xPos += player->bullets[player->bulletCount]->xVel * FIXED_TIMESTEP;
 						}
 
 						else if (player->directionFacing == -1) {
 							player->bullets[player->bulletCount]->xPos = player->xPos - player->width / 2 - player->bullets[player->bulletCount]->width / 2;
-							player->bullets[player->bulletCount]->xVel = -0.3f;
+							player->bullets[player->bulletCount]->xVel = -0.5f;
 							player->bullets[player->bulletCount]->xPos -= player->bullets[player->bulletCount]->xVel * FIXED_TIMESTEP;
 						}
 
