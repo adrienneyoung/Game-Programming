@@ -235,7 +235,7 @@ void Platformer::Setup() {
 	//Textures
 	font = LoadTexture("font2.png");
 	spritesheet = LoadTexture("sheet.png");
-	background = LoadTexture("park.png");
+	background = LoadTexture("park2.png");
 
 	//Stuff for background
 	vertices = { -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f };
@@ -276,6 +276,8 @@ void Platformer::Render() {
 	glClearColor(0.9f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glUseProgram(program->programID); //Installs a program object as part of current rendering state
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	program->setProjectionMatrix(projectionMatrix);
 	program->setViewMatrix(viewMatrix);
@@ -295,7 +297,7 @@ void Platformer::Render() {
 		glEnableVertexAttribArray(program->positionAttribute);
 		glEnableVertexAttribArray(program->texCoordAttribute);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
-		backgroundMatrix.setScale(7.0f, 3.5f, 1.0f);
+		backgroundMatrix.setScale(14.0f, 3.5f, 1.0f);
 
 		//Render player
 		/*if (player->directionFacing == 0)
@@ -338,9 +340,9 @@ void Platformer::Render() {
 
 		RenderLevel(); //Doesn't work
 
-		string s = to_string(player->xPos);
-		DrawText(program, gameText, font, "xPos: " + s, 0.2f, 0.2f, 0.0f, -0.5f);
-		gameText.setPosition(-8.0f, 0.0f, 1.0f);
+		//string s = to_string(player->xPos);
+		//DrawText(program, gameText, font, "xPos: " + s, 0.2f, 0.2f, 0.0f, -0.5f);
+		//gameText.setPosition(-8.0f, 0.0f, 1.0f);
 	}
 
 	else if (state = GAME_LOSE) {
@@ -400,6 +402,12 @@ void Platformer::Update(float elapsed) {
 
 		scrollScreen();
 		handleCollisions();
+	}
+
+	else if (state == GAME_LOSE) {
+		backgroundMatrix.identity();
+		gameText.identity();
+		viewMatrix.identity();
 	}
 }
 

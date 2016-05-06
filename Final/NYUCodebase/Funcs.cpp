@@ -71,9 +71,6 @@ SheetSprite::SheetSprite(unsigned int texID, int spriteCountX, int spriteCountY,
 
 
 void SheetSprite::Draw(ShaderProgram* program, Matrix& matrix, int index, float x, float y) {
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 	float u = (float)(((int)index) % spriteCountX) / (float)spriteCountX;
 	float v = (float)(((int)index) / spriteCountX) / (float)spriteCountY;
 	float spriteWidth = 1.0 / (float)spriteCountX;
