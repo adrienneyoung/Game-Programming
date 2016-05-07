@@ -188,7 +188,7 @@ Platformer::~Platformer()
 void Platformer::Setup() {
 	//Pug
 	pug = new Entity(0.0f, -0.9f, 3.5f, 2.0f, "pug.png");
-	pug->sprite = SheetSprite(pug->tex, 4, 1, pug->width, pug->height, 2.0f);
+	pug->sprite = SheetSprite(pug->tex, 4, 1, pug->width, pug->height, 1.5f);
 
 	//Animate pug
 	pug->runAnimationLeft = { 0, 1, 2, 3 };
@@ -235,7 +235,24 @@ void Platformer::Setup() {
 	//Textures
 	font = LoadTexture("font2.png");
 	spritesheet = LoadTexture("sheet.png");
-	background = LoadTexture("park2.png");
+	gameBackground = LoadTexture("park2.png");
+	mainBackground = LoadTexture("city.png");
+
+	//Stuff for scrolling background
+	/*svertices = { -4.0f + textureOffsetX, -2.0f,
+		4.0f + textureOffsetX, -2.0f,
+		4.0f + textureOffsetX, 2.0f,
+		-4.0f + textureOffsetX, -2.0f,
+		4.0f + textureOffsetX, 2.0f,
+		-4.0f + textureOffsetX, 2.0f };*/
+	/*svertices = { -4.0f, -2.0f,
+		4.0f, -2.0f,
+		4.0f, 2.0f,
+		-4.0f, -2.0f,
+		4.0f, 2.0f,
+		-4.0f, 2.0f };*/
+	svertices = { -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f };
+	stexCoords = { 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0 };
 
 	//Stuff for background
 	vertices = { -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f };
@@ -273,7 +290,8 @@ void Platformer::Setup() {
 }
 
 void Platformer::Render() {
-	glClearColor(0.9f, 0.3f, 0.3f, 1.0f);
+	//glClearColor(0.9f, 0.3f, 0.3f, 1.0f);
+	glClearColor(0.2f, 0.17f, 0.33f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glUseProgram(program->programID); //Installs a program object as part of current rendering state
 	glEnable(GL_BLEND);
@@ -283,21 +301,36 @@ void Platformer::Render() {
 	program->setViewMatrix(viewMatrix);
 
 	if (state == MAIN_MENU) {
-		DrawText(program, mainMenuText, font, "ANGRY DOGS", 0.4f, 0.2f, -2.6f, 1.0f);
-		DrawText(program, mainMenuText2, font, "Press space to start", 0.2f, 0.1f, -2.7f, 0.3f);
-		pug->Render(program, pug->matrix, pug->runAnimationLeft[pug->currentIndex]);
+		//Render background
+		program->setModelMatrix(backgroundMatrix);
+		glBindTexture(GL_TEXTURE_2D, mainBackground);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glVertexAttribPointer(program->positionAttribute, 2, GL_FLOAT, false, 0, svertices.data());
+		glVertexAttribPointer(program->texCoordAttribute, 2, GL_FLOAT, false, 0, stexCoords.data());
+		glEnableVertexAttribArray(program->positionAttribute);
+		glEnableVertexAttribArray(program->texCoordAttribute);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		string s = to_string(textureOffsetX);
+		DrawText(program, mainMenuText, font, "ANGRY DOGS", 0.6f, 0.1f, -3.0f, 1.3f);
+		DrawText(program, mainMenuText2, font, "Press space to start", 0.15f, 0.07f, -2.0f, -1.7f);
+		DrawText(program, gameText, font, s, 0.15f, 0.07f, -2.0f, -1.4f);
+		//pug->Render(program, pug->matrix, pug->runAnimationLeft[pug->currentIndex]);
+		player->sprite = SheetSprite(player->tex, 3, 2, player->width, player->height, 1.0f);
+		player->Render(program, player->matrix, player->runAnimationLeft[player->currentIndex]);
 	}
 	
 	else if (state == GAME_LEVEL) {
 		//Render background
-		program->setModelMatrix(backgroundMatrix);
-		glBindTexture(GL_TEXTURE_2D, background);
+		program->setModelMatrix(backgroundMatrix2);
+		glBindTexture(GL_TEXTURE_2D, gameBackground);
 		glVertexAttribPointer(program->positionAttribute, 2, GL_FLOAT, false, 0, vertices.data());
 		glVertexAttribPointer(program->texCoordAttribute, 2, GL_FLOAT, false, 0, texCoords.data());
 		glEnableVertexAttribArray(program->positionAttribute);
 		glEnableVertexAttribArray(program->texCoordAttribute);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
-		backgroundMatrix.setScale(14.0f, 3.5f, 1.0f);
+		backgroundMatrix2.setScale(14.0f, 3.5f, 1.0f);
 
 		//Render player
 		/*if (player->directionFacing == 0)
@@ -374,8 +407,19 @@ void Platformer::scrollScreen()
 }
 
 void Platformer::Update(float elapsed) {
-	if (state == MAIN_MENU)
-		pug->Animate(elapsed);
+	if (state == MAIN_MENU) {
+		if (textureOffsetX > 1.0f)
+			textureOffsetX = -3.5f;
+
+		textureOffsetX += elapsed * 0.7f;
+		backgroundMatrix.setScale(6.0f, 2.0f, 1.0f);
+		backgroundMatrix.setPosition(textureOffsetX, 0.0f, 0.0f);
+
+		//pug->Animate(elapsed);
+		player->matrix.identity();
+		player->Animate(elapsed);
+		player->matrix.setPosition(-0.15f, -1.0f, 1.0f);
+	}
 
 	else if (state == GAME_LEVEL) {
 		mainMenuText.identity();
@@ -494,13 +538,13 @@ bool Platformer::Run()
 
 	//Player move right
 	if (keys[SDL_SCANCODE_RIGHT]) {
-		player->xAcc = elapsed * 10.0f;
+		player->xAcc = elapsed * 8.0f;
 		player->directionFacing = 1;
 	}
 
 	//Player move left
 	else if (keys[SDL_SCANCODE_LEFT]) {
-		player->xAcc = elapsed * -10.0f;
+		player->xAcc = elapsed * -8.0f;
 		player->directionFacing = -1;
 	}
 

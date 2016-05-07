@@ -7,7 +7,7 @@ Spring 2016
 Controls:
 	Move using left and right arrow keys 
 	Jump using up arrow key
-	Shoot bullets using space
+	Shoot sticks using space
 */
 
 #include "Platformer.h"

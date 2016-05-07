@@ -43,7 +43,7 @@ public:
 
 	//Gravity
 	float xGrav = 0.0f;
-	float yGrav = -20.0f; 
+	float yGrav = -10.0f; 
 
 	//Collision detection
 	bool collidedTop;

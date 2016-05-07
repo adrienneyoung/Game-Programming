@@ -39,6 +39,7 @@ private:
 	Matrix projectionMatrix;
 	Matrix viewMatrix;
 	Matrix backgroundMatrix;
+	Matrix backgroundMatrix2;
 
 	Matrix mainMenuText;
 	Matrix mainMenuText2;
@@ -46,10 +47,15 @@ private:
 
 	GLuint font;
 	GLuint spritesheet;
-	GLuint background;
-
+	GLuint gameBackground;
+	GLuint mainBackground;
+	
+	vector<float> svertices;
+	vector<float> stexCoords; 
 	vector<float> vertices;
 	vector<float> texCoords;
+
+	float textureOffsetX = -3.5f;
 
 	//Entities
 	Entity* pug;
