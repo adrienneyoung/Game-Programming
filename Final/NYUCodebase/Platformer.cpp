@@ -1,121 +1,35 @@
 #include "Platformer.h"
 enum GameState { MAIN_MENU, GAME_LEVEL, GAME_WIN, GAME_LOSE };
 
-void Platformer::buildLevel() {
-	ifstream infile("map.txt");
-	string line;
-	while (getline(infile, line)) {
-		if (line == "[header]") {
-			if (!readHeader(infile)) {
-				return;
-			}
-		}
-		else if (line == "[layer]") {
-			readLayerData(infile);
-		}
-		/*else if (line == "[ObjectsLayer]") {
-		readEntityData(infile);
-		}*/
-	}
-}
+unsigned char level1Data[LEVEL_HEIGHT][LEVEL_WIDTH] = {
+	{ 0, 0, 0, 0, 0, 6, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 6, 6, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 6, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 6, 0, 0, 0 },
+	{ 6, 6, 6, 6, 0, 0, 0, 6, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 6, 0 },
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 6 },
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 6 },
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 6 },
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 6 },
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 6 },
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 6 },
+	{ 6, 6, 6, 6, 0, 0, 0, 0, 0, 6 }
+};
 
-bool Platformer::readHeader(std::ifstream &stream) {
-	string line;
-	mapWidth = -1;
-	mapHeight = -1;
-	while (getline(stream, line)) {
-		if (line == "") { break; }
-		istringstream sStream(line);
-		string key, value;
-		getline(sStream, key, '=');
-		getline(sStream, value);
-		if (key == "width") {
-			mapWidth = atoi(value.c_str());
-		}
-		else if (key == "height"){
-			mapHeight = atoi(value.c_str());
-		}
-	}
-	if (mapWidth == -1 || mapHeight == -1) {
-		return false;
-	}
-	else { // allocate our map data
-		levelData = new unsigned char*[mapHeight];
-		for (int i = 0; i < mapHeight; ++i) {
-			levelData[i] = new unsigned char[mapWidth];
-		}
-		return true;
-	}
+void Platformer::BuildLevel() {
+	memcpy(levelData, level1Data, LEVEL_HEIGHT*LEVEL_WIDTH);
 }
-
-bool Platformer::readLayerData(std::ifstream &stream) {
-	string line;
-	while (getline(stream, line)) {
-		if (line == "") { break; }
-		istringstream sStream(line);
-		string key, value;
-		getline(sStream, key, '=');
-		getline(sStream, value);
-		if (key == "data") {
-			for (int y = 0; y < mapHeight; y++) {
-				getline(stream, line);
-				istringstream lineStream(line);
-				string tile;
-				for (int x = 0; x < mapWidth; x++) {
-					getline(lineStream, tile, ',');
-					unsigned char val = (unsigned char)atoi(tile.c_str());
-					if (val > 0) {
-						// be careful, the tiles in this format are indexed from 1 not 0
-						levelData[y][x] = val - 1;
-					}
-					else {
-						levelData[y][x] = 0;
-					}
-				}
-			}
-		}
-	}
-	return true;
-}
-
-/*
-bool Platformer::readEntityData(std::ifstream &stream) {
-string line;
-string type;
-while (getline(stream, line)) {
-if (line == "") { break; }
-istringstream sStream(line);
-string key, value;
-getline(sStream, key, '=');
-getline(sStream, value);
-if (key == "type") {
-type = value;
-}
-else if (key == "location") {
-istringstream lineStream(value);
-string xPosition, yPosition;
-getline(lineStream, xPosition, ',');
-getline(lineStream, yPosition, ',');
-float placeX = atoi(xPosition.c_str()) / 16 * TILE_SIZE;
-float placeY = atoi(yPosition.c_str()) / 16 * -TILE_SIZE;
-placeEntity(type, placeX, placeY);
-}
-}
-return true;
-}
-*/
 
 void Platformer::RenderLevel(){
 	vector<float> vertexData;
 	vector<float> texCoordData;
-
-	int count = 0;
-
-	for (int y = 0; y < mapHeight; y++) {
-		for (int x = 0; x < mapWidth; x++) {
+	for (int y = 0; y < LEVEL_HEIGHT; y++) {
+		for (int x = 0; x < LEVEL_WIDTH; x++) {
 			if (levelData[y][x] != 0) {
 				float u = (float)(((int)levelData[y][x]) % SPRITE_COUNT_X) / (float)SPRITE_COUNT_X;
 				float v = (float)(((int)levelData[y][x]) / SPRITE_COUNT_X) / (float)SPRITE_COUNT_Y;
+
 				float spriteWidth = 1.0f / (float)SPRITE_COUNT_X;
 				float spriteHeight = 1.0f / (float)SPRITE_COUNT_Y;
 
@@ -123,40 +37,39 @@ void Platformer::RenderLevel(){
 					TILE_SIZE * x, -TILE_SIZE * y,
 					TILE_SIZE * x, (-TILE_SIZE * y) - TILE_SIZE,
 					(TILE_SIZE * x) + TILE_SIZE, (-TILE_SIZE * y) - TILE_SIZE,
-
 					TILE_SIZE * x, -TILE_SIZE * y,
 					(TILE_SIZE * x) + TILE_SIZE, (-TILE_SIZE * y) - TILE_SIZE,
 					(TILE_SIZE * x) + TILE_SIZE, -TILE_SIZE * y
 				});
+
 				texCoordData.insert(texCoordData.end(), {
 					u, v,
-					u, v + spriteHeight,
-					u + spriteWidth, v + spriteHeight,
-
+					u, v + (spriteHeight),
+					u + spriteWidth, v + (spriteHeight),
 					u, v,
-					u + spriteWidth, v + spriteHeight,
+					u + spriteWidth, v + (spriteHeight),
 					u + spriteWidth, v
 				});
-
-				count++;
 			}
+
+			glVertexAttribPointer(program->positionAttribute, 2, GL_FLOAT, false, 0, vertices.data());
+			glEnableVertexAttribArray(program->positionAttribute);
+
+			glVertexAttribPointer(program->texCoordAttribute, 2, GL_FLOAT, false, 0, texCoords.data());
+			glEnableVertexAttribArray(program->texCoordAttribute);
+
+			glBindTexture(GL_TEXTURE_2D, spritesheet);
+			glDrawArrays(GL_TRIANGLES, 0, 6 * LEVEL_HEIGHT * LEVEL_WIDTH);
+
+			glDisableVertexAttribArray(program->positionAttribute);
+			glDisableVertexAttribArray(program->texCoordAttribute);
 		}
 	}
+}
 
-	glUseProgram(program->programID);
-
-	glVertexAttribPointer(program->positionAttribute, 2, GL_FLOAT, false, 0, vertexData.data());
-	glEnableVertexAttribArray(program->positionAttribute);
-
-	glVertexAttribPointer(program->texCoordAttribute, 2, GL_FLOAT, false, 0, texCoordData.data());
-	glEnableVertexAttribArray(program->texCoordAttribute);
-
-	glBindTexture(GL_TEXTURE_2D, spritesheet);
-	glDrawArrays(GL_TRIANGLES, 0, count * 6);
-
-	glDisableVertexAttribArray(program->positionAttribute);
-	glDisableVertexAttribArray(program->texCoordAttribute);
-
+void Platformer::worldToTileCoordinates(float worldX, float worldY, int *gridX, int *gridY) {
+	*gridX = (int)(worldX / TILE_SIZE);
+	*gridY = (int)(-worldY / TILE_SIZE);
 }
 
 Platformer::Platformer() {
@@ -176,8 +89,7 @@ Platformer::Platformer() {
 	Setup();
 }
 
-Platformer::~Platformer()
-{
+Platformer::~Platformer() {
 	//Mix_FreeChunk(someSound);
 	Mix_FreeMusic(music);
 
@@ -186,24 +98,10 @@ Platformer::~Platformer()
 }
 
 void Platformer::Setup() {
-	//Pug
-	pug = new Entity(0.0f, -0.9f, 3.5f, 2.0f, "pug.png");
-	pug->sprite = SheetSprite(pug->tex, 4, 1, pug->width, pug->height, 1.5f);
-
-	//Animate pug
-	pug->runAnimationLeft = { 0, 1, 2, 3 };
-	pug->numFrames = 4;
-
-	//Player
-	//player = new Entity(-2.0f, 1.5f, 1.0f, 1.0f, "akarispritesheet.png");
-	//player->sprite = SheetSprite(player->tex, 3, 4, player->width, player->height, 1.0f);
+	//BuildLevel();
 
 	player = new Entity(-2.0f, 1.5f, 1.0f, 1.0f, "corgiLR.png", "corgiUD.png");
-	//player->sprite = SheetSprite(player->tex, 3, 4, player->width, player->height, 1.0f);
-
-	//Animate player
-	//player->runAnimationLeft = { 3, 4, 5 };
-	//player->runAnimationRight = { 6, 7, 8 };
+	//player->entityType = PLAYER;
 
 	player->runAnimationLeft = { 0, 1, 2 };
 	player->runAnimationRight = { 3, 4, 5 };
@@ -211,17 +109,11 @@ void Platformer::Setup() {
 	player->runAnimationFront = { 3, 4, 5 };
 
 	//Player's bullets
-	/*for (int i = 0; i < player->maxBullets; i++) {
-		Entity* bullet = new Entity(player->xPos, player->yPos, 0.25f, 0.25f, "bun.png");
-		bullet->sprite = SheetSprite(bullet->tex, 1, 1, bullet->width, bullet->height, 0.5f);
-		bullet->isBullet = true;
-		player->bullets.push_back(bullet);
-	}*/
-
 	for (int i = 0; i < player->maxBullets; i++) {
 		Entity* bullet = new Entity(player->xPos, player->yPos, 0.3f, 0.15f, "stick.png");
 		bullet->sprite = SheetSprite(bullet->tex, 1, 1, bullet->width, bullet->height, 0.25f);
 		bullet->isBullet = true;
+		//bullet->entityType = BULLET;
 		player->bullets.push_back(bullet);
 	}
 
@@ -234,29 +126,40 @@ void Platformer::Setup() {
 
 	//Textures
 	font = LoadTexture("font2.png");
-	spritesheet = LoadTexture("sheet.png");
+	spritesheet = LoadTexture("bun.png");
 	gameBackground = LoadTexture("park2.png");
 	mainBackground = LoadTexture("city.png");
 
 	//Stuff for scrolling background
-	/*svertices = { -4.0f + textureOffsetX, -2.0f,
-		4.0f + textureOffsetX, -2.0f,
-		4.0f + textureOffsetX, 2.0f,
-		-4.0f + textureOffsetX, -2.0f,
-		4.0f + textureOffsetX, 2.0f,
-		-4.0f + textureOffsetX, 2.0f };*/
-	/*svertices = { -4.0f, -2.0f,
-		4.0f, -2.0f,
-		4.0f, 2.0f,
-		-4.0f, -2.0f,
-		4.0f, 2.0f,
-		-4.0f, 2.0f };*/
-	svertices = { -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f };
-	stexCoords = { 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0 };
+	/*svertices = { -12.0f, -2.0f, 0.0f, -2.0f, 0.0f, 2.0f, -12.0f, -2.0f, 0.0f, 2.0f, -12.0f, 2.0f };
+	stexCoords = { 0.0f + textureOffsetX, 1.0f,
+		2.0f + textureOffsetX, 1.0f,
+		2.0f + textureOffsetX, 0.0f,
+		0.0f + textureOffsetX, 1.0f,
+		2.0f + textureOffsetX, 0.0f,
+		0.0f + textureOffsetX, 0.0f };*/
+	//svertices = { -15.0f, -2.0f, 15.0f, -2.0f, 15.0f, 2.0f, -15.0f, -2.0f, 15.0f, 2.0f, -15.0f, 2.0f };
+	svertices = { -32.0f, -2.0f, 
+				0.0f, -2.0f, 
+				0.0f, 2.0f, 
+				-32.0f, -2.0f, 
+				0.0f, 2.0f, 
+				-32.0f, 2.0f };
+	stexCoords = { 0.0f + textureOffsetX, 1.0f,
+		2.0f + textureOffsetX, 1.0f,
+		2.0f + textureOffsetX, 0.0f,
+		0.0f + textureOffsetX, 1.0f,
+		2.0f + textureOffsetX, 0.0f,
+		0.0f + textureOffsetX, 0.0f }; 
 
 	//Stuff for background
 	vertices = { -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f };
-	texCoords = { 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0 };
+	texCoords = { 0.0, 1.0, 
+				1.0, 1.0, 
+				1.0, 0.0, 
+				0.0, 1.0, 
+				1.0, 0.0, 
+				0.0, 0.0 };
 
 	//Main music
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
@@ -289,8 +192,10 @@ void Platformer::Setup() {
 	Mix_PlayMusic(music, -1);
 }
 
+
+
+
 void Platformer::Render() {
-	//glClearColor(0.9f, 0.3f, 0.3f, 1.0f);
 	glClearColor(0.2f, 0.17f, 0.33f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glUseProgram(program->programID); //Installs a program object as part of current rendering state
@@ -316,12 +221,13 @@ void Platformer::Render() {
 		DrawText(program, mainMenuText, font, "ANGRY DOGS", 0.6f, 0.1f, -3.0f, 1.3f);
 		DrawText(program, mainMenuText2, font, "Press space to start", 0.15f, 0.07f, -2.0f, -1.7f);
 		DrawText(program, gameText, font, s, 0.15f, 0.07f, -2.0f, -1.4f);
-		//pug->Render(program, pug->matrix, pug->runAnimationLeft[pug->currentIndex]);
 		player->sprite = SheetSprite(player->tex, 3, 2, player->width, player->height, 1.0f);
 		player->Render(program, player->matrix, player->runAnimationLeft[player->currentIndex]);
 	}
 	
 	else if (state == GAME_LEVEL) {
+		//RenderLevel();
+
 		//Render background
 		program->setModelMatrix(backgroundMatrix2);
 		glBindTexture(GL_TEXTURE_2D, gameBackground);
@@ -333,15 +239,6 @@ void Platformer::Render() {
 		backgroundMatrix2.setScale(14.0f, 3.5f, 1.0f);
 
 		//Render player
-		/*if (player->directionFacing == 0)
-			player->Render(program, player->matrix, 1);
-
-			else if (player->directionFacing == 1)
-			player->Render(program, player->matrix, player->runAnimationRight[player->currentIndex]);
-
-			else if (player->directionFacing == -1)
-			player->Render(program, player->matrix, player->runAnimationLeft[player->currentIndex]);*/
-
 		if (player->directionFacing == 0) {
 			player->sprite = SheetSprite(player->tex2, 3, 2, player->width, player->height, 1.0f);
 			player->Render(program, player->matrix, 3);
@@ -360,7 +257,6 @@ void Platformer::Render() {
 		//Render player's bullets
 		for (int i = 0; i < player->maxBullets; i++) {
 			if (player->bullets[i]->display) {
-				//player->bullets[i]->matrix.setScale(0.5f, 0.5f, 1.0f);
 				player->bullets[i]->Render(program, player->bullets[i]->matrix, 0);
 			}
 		}
@@ -371,7 +267,8 @@ void Platformer::Render() {
 			blocks[i]->isStatic = true;
 		}
 
-		RenderLevel(); //Doesn't work
+		//BuildLevel();
+		//RenderLevel(); //Doesn't work
 
 		//string s = to_string(player->xPos);
 		//DrawText(program, gameText, font, "xPos: " + s, 0.2f, 0.2f, 0.0f, -0.5f);
@@ -406,36 +303,33 @@ void Platformer::scrollScreen()
 	program->setViewMatrix(viewMatrix);
 }
 
-void Platformer::Update(float elapsed) {
+void Platformer::Update(float fixedElapsed) {
 	if (state == MAIN_MENU) {
-		if (textureOffsetX > 1.0f)
-			textureOffsetX = -3.5f;
+		if (textureOffsetX > 28.45f)
+			textureOffsetX = 3.55;
 
-		textureOffsetX += elapsed * 0.7f;
-		backgroundMatrix.setScale(6.0f, 2.0f, 1.0f);
+		textureOffsetX += fixedElapsed;
 		backgroundMatrix.setPosition(textureOffsetX, 0.0f, 0.0f);
 
-		//pug->Animate(elapsed);
 		player->matrix.identity();
-		player->Animate(elapsed);
+		player->Animate(fixedElapsed);
 		player->matrix.setPosition(-0.15f, -1.0f, 1.0f);
 	}
 
 	else if (state == GAME_LEVEL) {
 		mainMenuText.identity();
 		mainMenuText2.identity();
-		pug->matrix.identity();
 
-		player->Update(elapsed);
+		player->Update(fixedElapsed);
 
 		//Player's bullets
 		for (int i = 0; i < player->maxBullets; i++)
 		{
-			player->bullets[i]->Update(elapsed);
+			player->bullets[i]->Update(fixedElapsed);
 
 			//bullet collision
 
-			if (player->bullets[i]->xPos > 6.0f || player->bullets[i]->xPos < -10.0f) {
+			if (player->bullets[i]->xPos > 10.0f || player->bullets[i]->xPos < -10.0f) {
 				player->bullets[i]->display = false;
 				player->bullets[i]->xVel = 0.0f;
 			}
@@ -476,6 +370,15 @@ bool Platformer::Run()
 	float elapsed = ticks - lastFrameTicks;
 	lastFrameTicks = ticks;
 
+	float fixedElapsed = elapsed;
+	if (fixedElapsed > FIXED_TIMESTEP * MAX_TIMESTEPS) {
+		fixedElapsed = FIXED_TIMESTEP * MAX_TIMESTEPS;
+	}
+	while (fixedElapsed >= FIXED_TIMESTEP) {
+		fixedElapsed -= FIXED_TIMESTEP;
+		Update(FIXED_TIMESTEP);
+	}
+
 	SDL_Event event;
 
 	while (SDL_PollEvent(&event)) {
@@ -509,13 +412,13 @@ bool Platformer::Run()
 						//Bullet comes out of the front of the player
 						if (player->directionFacing == 1) {
 							player->bullets[player->bulletCount]->xPos = player->xPos + player->width / 2 + player->bullets[player->bulletCount]->width / 2;
-							player->bullets[player->bulletCount]->xVel = 0.5f;
+							player->bullets[player->bulletCount]->xVel = 0.3f;
 							player->bullets[player->bulletCount]->xPos += player->bullets[player->bulletCount]->xVel * FIXED_TIMESTEP;
 						}
 
 						else if (player->directionFacing == -1) {
 							player->bullets[player->bulletCount]->xPos = player->xPos - player->width / 2 - player->bullets[player->bulletCount]->width / 2;
-							player->bullets[player->bulletCount]->xVel = -0.5f;
+							player->bullets[player->bulletCount]->xVel = -0.3f;
 							player->bullets[player->bulletCount]->xPos -= player->bullets[player->bulletCount]->xVel * FIXED_TIMESTEP;
 						}
 
@@ -538,13 +441,13 @@ bool Platformer::Run()
 
 	//Player move right
 	if (keys[SDL_SCANCODE_RIGHT]) {
-		player->xAcc = elapsed * 8.0f;
+		player->xAcc = elapsed * 7.0f;
 		player->directionFacing = 1;
 	}
 
 	//Player move left
 	else if (keys[SDL_SCANCODE_LEFT]) {
-		player->xAcc = elapsed * -8.0f;
+		player->xAcc = elapsed * -7.0f;
 		player->directionFacing = -1;
 	}
 

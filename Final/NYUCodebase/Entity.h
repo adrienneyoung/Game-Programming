@@ -1,5 +1,6 @@
 #include "Funcs.h"
 #define FIXED_TIMESTEP 0.0166666f
+enum EntityType { PLAYER, BULLET, ENEMY };
 
 class Entity {
 public:
@@ -44,6 +45,7 @@ public:
 	//Gravity
 	float xGrav = 0.0f;
 	float yGrav = -10.0f; 
+	//float yGrav = 0.0f;
 
 	//Collision detection
 	bool collidedTop;
@@ -72,4 +74,6 @@ public:
 	vector<Entity*> bullets;
 	int maxBullets = 10;
 	int bulletCount = 0;
+
+	EntityType entityType;
 };

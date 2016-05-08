@@ -5,9 +5,13 @@
 // 60 FPS (1.0f/60.0f)
 #define FIXED_TIMESTEP 0.0166666f
 #define MAX_TIMESTEPS 6
-#define TILE_SIZE .70f
+
 #define SPRITE_COUNT_X 14
 #define SPRITE_COUNT_Y 7
+
+#define LEVEL_HEIGHT 13
+#define LEVEL_WIDTH 10
+#define TILE_SIZE 1.0f
 
 class Platformer {
 public:
@@ -19,21 +23,23 @@ public:
 
 	void Setup();
 	void Render();
-	void Update(float elapsed);
+	void Update(float fixedElapsed);
 	bool Run();
 
-	void buildLevel();
-	bool readHeader(std::ifstream &stream);
-	bool readLayerData(std::ifstream &stream);
+	void BuildLevel();
+	//bool readHeader(std::ifstream &stream);
+	//bool readLayerData(std::ifstream &stream);
 	//bool readEntityData(std::ifstream &stream);
 	void RenderLevel();
-
+	void worldToTileCoordinates(float worldX, float worldY, int *gridX, int *gridY);
 
 private:
 	SDL_Window* displayWindow;
 	ShaderProgram* program;
 	Mix_Music* music;
 	int state;
+
+	unsigned char levelData[LEVEL_HEIGHT][LEVEL_WIDTH];
 
 	//Matrices
 	Matrix projectionMatrix;
@@ -55,17 +61,15 @@ private:
 	vector<float> vertices;
 	vector<float> texCoords;
 
-	float textureOffsetX = -3.5f;
+	float textureOffsetX = 3.55f;
 
 	//Entities
-	Entity* pug;
 	Entity* player;
 	vector<Entity*> staticEntities;
 
 	//Map stuff
 	int mapWidth;
 	int mapHeight;
-	unsigned char** levelData;
 
 	bool done = false;
 	float lastFrameTicks = 0.0f;
