@@ -9,8 +9,11 @@
 #define SPRITE_COUNT_X 14
 #define SPRITE_COUNT_Y 7
 
-#define LEVEL_HEIGHT 13
-#define LEVEL_WIDTH 10
+//#define SPRITE_COUNT_X 30
+//#define SPRITE_COUNT_Y 30
+
+#define LEVEL_HEIGHT 5
+#define LEVEL_WIDTH 3
 #define TILE_SIZE 1.0f
 
 class Platformer {
@@ -27,9 +30,6 @@ public:
 	bool Run();
 
 	void BuildLevel();
-	//bool readHeader(std::ifstream &stream);
-	//bool readLayerData(std::ifstream &stream);
-	//bool readEntityData(std::ifstream &stream);
 	void RenderLevel();
 	void worldToTileCoordinates(float worldX, float worldY, int *gridX, int *gridY);
 
@@ -65,14 +65,8 @@ private:
 
 	//Entities
 	Entity* player;
-	vector<Entity*> staticEntities;
-
-	//Map stuff
-	int mapWidth;
-	int mapHeight;
+	//vector<Entity*> staticEntities;
 
 	bool done = false;
 	float lastFrameTicks = 0.0f;
-
-	vector<Entity*> blocks; //this is for testing purposes
 };

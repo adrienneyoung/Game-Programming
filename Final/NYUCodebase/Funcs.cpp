@@ -25,6 +25,7 @@ void DrawText(ShaderProgram *program, Matrix& matrix, int fontTexture, std::stri
 	float texture_size = 1.0 / 16.0f;
 	std::vector<float> vertexData;
 	std::vector<float> texCoordData;
+
 	for (int i = 0; i < text.size(); i++) {
 		float texture_x = (float)(((int)text[i]) % 16) / 16.0f;
 		float texture_y = (float)(((int)text[i]) / 16) / 16.0f;
@@ -47,6 +48,7 @@ void DrawText(ShaderProgram *program, Matrix& matrix, int fontTexture, std::stri
 			texture_x, texture_y + texture_size,
 		});
 	}
+
 	glUseProgram(program->programID);
 
 	glVertexAttribPointer(program->positionAttribute, 2, GL_FLOAT, false, 0, vertexData.data());
