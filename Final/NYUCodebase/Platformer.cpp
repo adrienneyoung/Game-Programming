@@ -2,17 +2,31 @@
 enum GameState { MAIN_MENU, GAME_LEVEL, GAME_WIN, GAME_LOSE };
 enum EntityType { PLAYER, BULLET, ENEMY };
 
+
 unsigned char level1Data[LEVEL_HEIGHT][LEVEL_WIDTH] = {
-	{ 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, },
-	{ 60, 57, 58, 59, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, },
-	{ 85, 85, 85, 85, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, },
-	{ 59, 60, 57, 58, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, },
-	{ 85, 85, 85, 85, 84, 84, 84, 84, 2, 3, 4, 84, 84, 84, 84, 84, 84, 84, },
-	{ 58, 59, 60, 57, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, },
-	{ 85, 85, 85, 85, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, },
-	{ 57, 58, 59, 60, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, },
-	{ 85, 85, 85, 85, 30, 31, 31, 3, 31, 31, 31, 31, 31, 31, 31, 31, 31, 32, },
+{ 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, },
+{ 60, 57, 58, 59, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, },
+{ 85, 85, 85, 85, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, },
+{ 59, 60, 57, 58, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, },
+{ 85, 85, 85, 85, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, },
+{ 58, 59, 60, 57, 84, 84, 84, 84, 2, 3, 4, 84, 84, 84, 84, 84, 84, 84, },
+{ 85, 85, 85, 85, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, },
+{ 57, 58, 59, 60, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, },
+{ 85, 85, 85, 85, 30, 31, 31, 3, 31, 31, 31, 31, 31, 31, 31, 31, 31, 32, },
 };
+
+
+/* unsigned char level1Data[LEVEL_HEIGHT][LEVEL_WIDTH] = {
+	{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, },
+	{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, },
+	{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, },
+	{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, },
+	{ 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, },
+	{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, },
+	{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, },
+	{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, },
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+}; */
 
 void Platformer::BuildLevel() {
 	memcpy(levelData, level1Data, LEVEL_HEIGHT*LEVEL_WIDTH);
@@ -93,14 +107,14 @@ bool Platformer::isSolid(int x, int y, unsigned char levelData[LEVEL_HEIGHT][LEV
 
 Platformer::Platformer() {
 	SDL_Init(SDL_INIT_VIDEO);
-	displayWindow = SDL_CreateWindow("Angry Dogs", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 360, SDL_WINDOW_OPENGL);
+	displayWindow = SDL_CreateWindow("Angry Dogs", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 900, 600, SDL_WINDOW_OPENGL);
 	SDL_GLContext context = SDL_GL_CreateContext(displayWindow);
 	SDL_GL_MakeCurrent(displayWindow, context);
 #ifdef _WINDOWS
 	glewInit();
 #endif
 
-	glViewport(0, 0, 640, 360);
+	glViewport(0, 0, 900, 600);
 	program = new ShaderProgram(RESOURCE_FOLDER"vertex_textured.glsl", RESOURCE_FOLDER"fragment_textured.glsl");
 
 	projectionMatrix.setOrthoProjection(-3.55f, 3.55f, -2.0f, 2.0f, -1.0f, 1.0f);
@@ -133,6 +147,14 @@ void Platformer::Setup() {
 		bullet->isBullet = true;
 		//bullet->entityType = BULLET;
 		player->bullets.push_back(bullet);
+	}
+
+	//Enemies
+	for (int i = 0; i < 3; i++) {
+		Entity* enemy = new Entity(3.0f*float(i), -7.0f, 1.0f, 1.0f, "totoro.png");
+		enemy->sprite = SheetSprite(enemy->tex, 1, 1, enemy->width, enemy->height, 1.5f);
+		enemy->isEnemy = true;
+		enemies.push_back(enemy);
 	}
 
 	//Textures
@@ -239,8 +261,8 @@ void Platformer::Render() {
 		DrawText(program, mainMenuText2, font, "Press space to start", 0.15f, 0.07f, -2.0f, -1.7f);
 
 		//Debug
-		string s = to_string(textureOffsetX);
-		DrawText(program, gameText, font, s, 0.15f, 0.07f, -2.0f, -1.4f);
+		//string s = to_string(textureOffsetX);
+		//DrawText(program, gameText, font, s, 0.15f, 0.07f, -2.0f, -1.4f);
 
 		//Corgi
 		player->sprite = SheetSprite(player->tex, 3, 2, player->width, player->height, 1.0f);
@@ -289,6 +311,11 @@ void Platformer::Render() {
 			if (player->bullets[i]->display) {
 				player->bullets[i]->Render(program, player->bullets[i]->matrix, 0);
 			}
+		}
+
+		//Render enemies
+		for (int i = 0; i < enemies.size(); i++) {
+			enemies[i]->Render(program, enemies[i]->matrix, 0);
 		}
 
 		RenderLevel();
@@ -345,38 +372,38 @@ void Platformer::Update(float fixedElapsed) {
 		float yPen = 0.0f;
 
 		//Top collision
-		worldToTileCoordinates(player->xPos, player->yPos + player->height / 2, &gridX, &gridY);
+		worldToTileCoordinates(player->xPos, player->yPos + player->height / 2.0f, &gridX, &gridY);
 		if (isSolid(gridX, gridY, levelData)) {
-			yPen = (player->yPos + player->height / 2) - ((-TILE_SIZE * gridY) - TILE_SIZE);
+			yPen = (player->yPos + player->height / 2.0f) - ((-TILE_SIZE * gridY) - TILE_SIZE);
 			player->yPos -= yPen + 0.0001f; 
-			player->yVel = 0;
+			player->yVel = 0.0f;
 			player->collidedTop = true;
 		}
 
 		//Bottom collision
-		worldToTileCoordinates(player->xPos, player->yPos - player->height / 2, &gridX, &gridY);
+		worldToTileCoordinates(player->xPos, player->yPos - player->height / 2.0f, &gridX, &gridY);
 		if (isSolid(gridX, gridY, levelData)) {
-			yPen = (-TILE_SIZE * gridY) - (player->yPos - player->height / 2);
+			yPen = (-TILE_SIZE * gridY) - (player->yPos - player->height / 2.0f);
 			player->yPos += yPen + 0.0001f;
-			player->yVel = 0;
+			player->yVel = 0.0f;
 			player->collidedBottom = true;
 		}
 
 		//Left collision
-		worldToTileCoordinates(player->xPos - player->width / 2, player->yPos, &gridX, &gridY);
+		worldToTileCoordinates(player->xPos - player->width / 2.0f, player->yPos, &gridX, &gridY);
 		if (isSolid(gridX, gridY, levelData)) {
-			xPen = ((TILE_SIZE * gridX) + TILE_SIZE) - (player->xPos - player->width / 2);
+			xPen = ((TILE_SIZE * gridX) + TILE_SIZE) - (player->xPos - player->width / 2.0f);
 			player->xPos += xPen + 0.0001f;
-			player->xVel = 0;
+			player->xVel = 0.0f;
 			player->collidedLeft = true;
 		}
 
 		//Right collision
-		worldToTileCoordinates(player->xPos + player->width / 2, player->yPos, &gridX, &gridY);
+		worldToTileCoordinates(player->xPos + player->width / 2.0f, player->yPos, &gridX, &gridY);
 		if (isSolid(gridX, gridY, levelData)) {
-			xPen = (player->xPos - player->width / 2) - (TILE_SIZE * gridX);
-			player->xPos += xPen + 0.0001f;
-			player->xVel = 0;
+			xPen = (player->xPos + player->width / 2.0f) - (TILE_SIZE * gridX);
+			player->xPos -= xPen + 0.0001f;
+			player->xVel = 0.0f;
 			player->collidedRight = true;
 		}
 
@@ -496,7 +523,7 @@ bool Platformer::Run()
 	}
 
 	//For player and block collision testing
-	/*else if (keys[SDL_SCANCODE_UP]) {
+	/* else if (keys[SDL_SCANCODE_UP]) {
 		player->yAcc = elapsed * 7.0f;
 		player->directionFacing = 2;
 	}
@@ -504,7 +531,7 @@ bool Platformer::Run()
 	else if (keys[SDL_SCANCODE_DOWN]) {
 		player->yAcc = elapsed * -7.0f;
 		player->directionFacing = -2;
-	}*/
+	} */
 
 	else if (keys == SDL_GetKeyboardState(NULL)) {
 		player->xVel = lerp(player->xVel, 0.0f, FIXED_TIMESTEP * player->xFric);

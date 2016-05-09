@@ -52,6 +52,10 @@ void Entity::Update(float elapsed)
 		matrix.Rotate(-elapsed * 20.0f);
 	}
 
+	if (isEnemy) {
+		yGrav = 0.0f;
+	}
+
 	Animate(elapsed);
 }
 

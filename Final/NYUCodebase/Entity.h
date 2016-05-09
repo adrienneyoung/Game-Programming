@@ -50,6 +50,7 @@ public:
 	//Flags
 	bool display = false;
 	bool isBullet = false;
+	bool isEnemy = false;
 
 	//Animate player
 	vector<int> runAnimationLeft;
