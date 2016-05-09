@@ -3,11 +3,15 @@ enum GameState { MAIN_MENU, GAME_LEVEL, GAME_WIN, GAME_LOSE };
 enum EntityType { PLAYER, BULLET, ENEMY };
 
 unsigned char level1Data[LEVEL_HEIGHT][LEVEL_WIDTH] = {
-	{ 14, 14, 14 },
-	{ 14, 14, 14 },
-	{ 14, 14, 14 },
-	{ 30, 30, 30 },
-	{ 14, 14, 14 },
+	{ 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84 },
+	{ 60, 57, 58, 59, 84, 84, 84, 84, 84, 84, 84, 84 },
+	{ 85, 85, 85, 85, 84, 84, 84, 84, 84, 84, 84, 84 },
+	{ 59, 60, 57, 58, 84, 84, 84, 84, 84, 84, 84, 84 },
+	{ 85, 85, 85, 85, 84, 84, 84, 84, 84, 84, 84, 84 },
+	{ 58, 59, 60, 57, 84, 84, 84, 84, 84, 84, 84, 84 },
+	{ 85, 85, 85, 85, 84, 84, 84, 84, 84, 84, 84, 84 },
+	{ 57, 58, 59, 60, 84, 84, 84, 84, 84, 84, 84, 84 },
+	{ 85, 85, 85, 85, 30, 31, 31, 31, 31, 31, 31, 32 },
 };
 
 void Platformer::BuildLevel() {
@@ -18,40 +22,48 @@ void Platformer::RenderLevel(){
 	vector<float> vertexData;
 	vector<float> texCoordData;
 
+	float spriteWidth;
+	float spriteHeight;
+
 	for (int y = 0; y < LEVEL_HEIGHT; y++) {
 		for (int x = 0; x < LEVEL_WIDTH; x++) {
-			//if (levelData[y][x] != 14) {
-				
+
+			float u = (float)(((int)levelData[y][x]) % SPRITE_COUNT_X) / (float)SPRITE_COUNT_X;
+			float v = (float)(((int)levelData[y][x]) / SPRITE_COUNT_X) / (float)SPRITE_COUNT_Y;
+
+			if (levelData[y][x] != 84) {
 				Matrix matrixtest;
 				program->setModelMatrix(matrixtest);
 
-				float u = (float)(((int)levelData[y][x]) % SPRITE_COUNT_X) / (float)SPRITE_COUNT_X;
-				float v = (float)(((int)levelData[y][x]) / SPRITE_COUNT_X) / (float)SPRITE_COUNT_Y;
+				spriteWidth = 1.0f / (float)SPRITE_COUNT_X;
+				spriteHeight = 1.0f / (float)SPRITE_COUNT_Y;
+			}
 
-				float spriteWidth = 1.0f / (float)SPRITE_COUNT_X;
-				float spriteHeight = 1.0f / (float)SPRITE_COUNT_Y;
+			else {
+				spriteWidth = 0.0f;
+				spriteHeight = 0.0f;
+			}
 
-				vertexData.insert(vertexData.end(), {
+			vertexData.insert(vertexData.end(), {
 
-					TILE_SIZE * x, -TILE_SIZE * y,
-					TILE_SIZE * x, (-TILE_SIZE * y) - TILE_SIZE,
-					(TILE_SIZE * x) + TILE_SIZE, (-TILE_SIZE * y) - TILE_SIZE,
+				TILE_SIZE * x, -TILE_SIZE * y,
+				TILE_SIZE * x, (-TILE_SIZE * y) - TILE_SIZE,
+				(TILE_SIZE * x) + TILE_SIZE, (-TILE_SIZE * y) - TILE_SIZE,
 
-					TILE_SIZE * x, -TILE_SIZE * y,
-					(TILE_SIZE * x) + TILE_SIZE, (-TILE_SIZE * y) - TILE_SIZE,
-					(TILE_SIZE * x) + TILE_SIZE, -TILE_SIZE * y
-				});
+				TILE_SIZE * x, -TILE_SIZE * y,
+				(TILE_SIZE * x) + TILE_SIZE, (-TILE_SIZE * y) - TILE_SIZE,
+				(TILE_SIZE * x) + TILE_SIZE, -TILE_SIZE * y
+			});
 
-				texCoordData.insert(texCoordData.end(), {
-					u, v,
-					u, v + spriteHeight,
-					u + spriteWidth, v + spriteHeight,
+			texCoordData.insert(texCoordData.end(), {
+				u, v,
+				u, v + spriteHeight,
+				u + spriteWidth, v + spriteHeight,
 
-					u, v,
-					u + spriteWidth, v + spriteHeight,
-					u + spriteWidth, v
-				});
-			//}
+				u, v,
+				u + spriteWidth, v + spriteHeight,
+				u + spriteWidth, v
+			});
 		}
 	}
 
@@ -100,7 +112,7 @@ Platformer::~Platformer() {
 
 void Platformer::Setup() {
 	BuildLevel();
-	player = new Entity(-2.0f, 1.5f, 1.0f, 1.0f, "corgiLR.png", "corgiUD.png");
+	player = new Entity(5.0f, 1.5f, 1.0f, 1.0f, "corgiLR.png", "corgiUD.png");
 	//player->entityType = PLAYER;
 
 	player->runAnimationLeft = { 0, 1, 2 };
@@ -139,6 +151,7 @@ void Platformer::Setup() {
 				-48.0f, -2.0f,
 				0.0f, 2.0f, 
 				-48.0f, 2.0f };
+
 	stexCoords = { 0.0f + textureOffsetX, 1.0f,
 		3.0f + textureOffsetX, 1.0f,
 		3.0f + textureOffsetX, 0.0f,
@@ -146,8 +159,14 @@ void Platformer::Setup() {
 		3.0f + textureOffsetX, 0.0f,
 		0.0f + textureOffsetX, 0.0f }; 
 
-	//Stuff for game background
-	vertices = { -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f };
+	//Stuff for game level background
+	vertices = { 0.0f, -2.5f, 
+				2.0f, -2.5f, 
+				2.0f, 0.5f, 
+				0.0f, -2.5f, 
+				2.0f, 0.5f, 
+				0.0f, 0.5f };
+
 	texCoords = { 0.0, 1.0, 
 				1.0, 1.0, 
 				1.0, 0.0, 
@@ -157,7 +176,8 @@ void Platformer::Setup() {
 
 	//Main music
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
-	music = Mix_LoadMUS("fate.mp3");
+	music = Mix_LoadMUS("chinatsu.mp3");
+	//music = Mix_LoadMUS("fate.mp3");
 	//music = Mix_LoadMUS("fate2.mp3");
 	//music = Mix_LoadMUS("fate3.mp3");
 	//music = Mix_LoadMUS("fate4.mp3");

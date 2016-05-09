@@ -12,8 +12,8 @@
 //#define SPRITE_COUNT_X 30
 //#define SPRITE_COUNT_Y 30
 
-#define LEVEL_HEIGHT 5
-#define LEVEL_WIDTH 3
+#define LEVEL_HEIGHT 9
+#define LEVEL_WIDTH 12
 #define TILE_SIZE 1.0f
 
 class Platformer {
