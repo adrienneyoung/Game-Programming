@@ -13,7 +13,7 @@
 //#define SPRITE_COUNT_Y 30
 
 #define LEVEL_HEIGHT 9
-#define LEVEL_WIDTH 12
+#define LEVEL_WIDTH 18
 #define TILE_SIZE 1.0f
 
 class Platformer {
@@ -22,7 +22,6 @@ public:
 	~Platformer();
 
 	void scrollScreen();
-	void handleCollisions();
 
 	void Setup();
 	void Render();
@@ -32,6 +31,7 @@ public:
 	void BuildLevel();
 	void RenderLevel();
 	void worldToTileCoordinates(float worldX, float worldY, int *gridX, int *gridY);
+	bool isSolid(int x, int y, unsigned char levelData[LEVEL_HEIGHT][LEVEL_WIDTH]);
 
 private:
 	SDL_Window* displayWindow;
@@ -65,7 +65,6 @@ private:
 
 	//Entities
 	Entity* player;
-	//vector<Entity*> staticEntities;
 
 	bool done = false;
 	float lastFrameTicks = 0.0f;

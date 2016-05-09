@@ -11,12 +11,6 @@ public:
 	void Update(float elapsed);
 	void Render(ShaderProgram* program, Matrix& matrix, int index);
 
-	//void jump();
-
-	bool collidesWith(Entity* block);
-	void checkCollision(Entity* block);
-	void handleCollision(Entity* block);
-
 	//Texture stuff
 	Matrix matrix;
 	GLuint tex;
@@ -39,12 +33,13 @@ public:
 
 	//Friction
 	float xFric = 0.7f;
-	float yFric = 0.7f;
+	float yFric = 0.0f;
+	//float yFric = 0.7f;
 
 	//Gravity
 	float xGrav = 0.0f;
-	//float yGrav = -10.0f; 
-	float yGrav = 0.0f;
+	float yGrav = -10.0f; 
+	//float yGrav = 0.0f;
 
 	//Collision detection
 	bool collidedTop;
@@ -54,7 +49,6 @@ public:
 
 	//Flags
 	bool display = false;
-	bool isStatic = false; //no gravity, no movement, no collision checks ex: a block
 	bool isBullet = false;
 
 	//Animate player
