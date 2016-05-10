@@ -320,7 +320,7 @@ void Platformer::Render() {
 
 		RenderLevel();
 
-		string s = to_string(player->collidedBottom);
+		string s = to_string(player->collidedTop);
 		DrawText(program, gameText, font, s, 0.2f, 0.2f, 0.0f, -0.5f);
 		gameText.setPosition(8.0f, -7.8f, 1.0f);
 	}
@@ -372,19 +372,19 @@ void Platformer::Update(float fixedElapsed) {
 		float yPen = 0.0f;
 
 		//Top collision
-		worldToTileCoordinates(player->xPos, player->yPos + player->height / 2.0f, &gridX, &gridY);
+		worldToTileCoordinates(player->xPos, player->yPos + player->height / 2.2f, &gridX, &gridY);
 		if (isSolid(gridX, gridY, levelData)) {
-			yPen = (player->yPos + player->height / 2.0f) - ((-TILE_SIZE * gridY) - TILE_SIZE);
-			player->yPos -= yPen + 0.0001f; 
+			yPen = (player->yPos + player->height / 2.2f) - ((-TILE_SIZE * gridY) - TILE_SIZE);
+			player->yPos -= yPen + 0.0001f;
 			player->yVel = 0.0f;
 			player->collidedTop = true;
 		}
 
 		//Bottom collision
-		worldToTileCoordinates(player->xPos, player->yPos - player->height / 2.0f, &gridX, &gridY);
+		worldToTileCoordinates(player->xPos, player->yPos - player->height / 2.1f, &gridX, &gridY);
 		if (isSolid(gridX, gridY, levelData)) {
-			yPen = (-TILE_SIZE * gridY) - (player->yPos - player->height / 2.0f);
-			player->yPos += yPen + 0.0001f;
+			yPen = (-TILE_SIZE * gridY) - (player->yPos - player->height / 2.1f);
+			player->yPos += yPen + 0.000000001f;
 			player->yVel = 0.0f;
 			player->collidedBottom = true;
 		}

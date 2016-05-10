@@ -1,10 +1,10 @@
-﻿Build started 5/9/2016 6:04:17 PM.
+﻿Build started 5/10/2016 1:20:02 AM.
      1>Project "C:\Users\Adrienne\Desktop\game prog hw\Final\NYUCodebase\NYUCodebase.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /IC:\SDL2\include /IC:\SDL2_image\include /IC:\glew\include /IC:\SDL2_mixer\include /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _WINDOWS /D _MBCS /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Platformer.cpp
          Platformer.cpp
-     1>c:\users\adrienne\desktop\game prog hw\final\nyucodebase\platformer.cpp(317): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\adrienne\desktop\game prog hw\final\nyucodebase\platformer.cpp(350): warning C4305: '=' : truncation from 'double' to 'float'
+     1>c:\users\adrienne\desktop\game prog hw\final\nyucodebase\platformer.cpp(338): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\adrienne\desktop\game prog hw\final\nyucodebase\platformer.cpp(371): warning C4305: '=' : truncation from 'double' to 'float'
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Adrienne\Desktop\game prog hw\Final\Debug\NYUCodebase.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\SDL2_mixer\lib\x86 /LIBPATH:C:\SDL2\lib\x86 /LIBPATH:C:\SDL2_image\lib\x86 /LIBPATH:C:\glew\lib\Release\Win32 SDL2.lib SDL2_mixer.lib glew32.lib SDL2main.lib SDL2_image.lib OpenGL32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Adrienne\Desktop\game prog hw\Final\Debug\NYUCodebase.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Adrienne\Desktop\game prog hw\Final\Debug\NYUCodebase.lib" /MACHINE:X86 Debug\Entity.obj
          Debug\Funcs.obj
@@ -17,4 +17,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.10
+Time Elapsed 00:00:01.27
