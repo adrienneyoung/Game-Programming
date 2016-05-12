@@ -587,6 +587,13 @@ void Platformer::Update(float fixedElapsed) {
 			}
 		}
 
+		//Humping
+		for (int i = 0; i < enemies.size(); i++) {
+			if (player->isHumping && player->collidesWith(enemies[i])) {
+				enemies[i]->health--;
+			}
+		}
+
 		scrollScreen();
 	}
 
