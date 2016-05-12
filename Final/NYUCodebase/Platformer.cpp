@@ -686,8 +686,8 @@ void Platformer::Update(float fixedElapsed) {
 		if (killCount == enemies.size())
 			state = GAME_WIN;
 
-		if (killCount == 1)
-			state = GAME_LOSE;
+//		if (killCount == 1)
+	//		state = GAME_LOSE;
 
 		//Enemy collisions
 		for (int i = 0; i < enemies.size(); i++) {
@@ -851,13 +851,13 @@ bool Platformer::Run()
 
 	//Player move right
 	if (keys[SDL_SCANCODE_RIGHT]) {
-		player->xAcc = fixedElapsed * 35.0f;
+		player->xAcc += fixedElapsed * 5.0f;
 		player->directionFacing = 1;
 	}
 
 	//Player move left
 	else if (keys[SDL_SCANCODE_LEFT]) {
-		player->xAcc = fixedElapsed * -35.0f;
+		player->xAcc += fixedElapsed * -5.0f;
 		player->directionFacing = -1;
 	}
 

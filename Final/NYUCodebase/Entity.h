@@ -47,7 +47,7 @@ public:
 	float yAcc = 0.0f;
 
 	//Friction
-	float xFric = 8.0f;
+	float xFric = 100.0f;
 	float yFric = 0.0f;
 	//float yFric = 0.7f;
 
