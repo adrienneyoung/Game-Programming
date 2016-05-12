@@ -99,6 +99,7 @@ private:
 
 	//Entities
 	Entity* player;
+	Entity* akari;
 	vector<Entity*> enemies;
 	vector<Particle*> particles;
 	vector<Entity*> staticEntities;

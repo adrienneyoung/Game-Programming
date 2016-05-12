@@ -240,7 +240,7 @@ bool Platformer::isSolid(int x, int y, unsigned char levelData[LEVEL_HEIGHT][LEV
 
 Platformer::Platformer() {
 	SDL_Init(SDL_INIT_VIDEO);
-	displayWindow = SDL_CreateWindow("Angry Dogs", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 900, 600, SDL_WINDOW_OPENGL);
+	displayWindow = SDL_CreateWindow("Extreme Housekeeping: The Sequel", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 900, 600, SDL_WINDOW_OPENGL);
 	SDL_GLContext context = SDL_GL_CreateContext(displayWindow);
 	SDL_GL_MakeCurrent(displayWindow, context);
 #ifdef _WINDOWS
@@ -269,6 +269,10 @@ Platformer::~Platformer() {
 void Platformer::Setup() {
 	BuildLevel();
 	initializeEmitter();
+
+	akari = new Entity(2.0, -0.5, 1.0f, 1.0f, "mybae.png", "mybae2.png");
+	akari->runAnimationFront = { 0, 1, 2, 3, 4, 5, 6, 7 };
+	akari->numFrames = 8;
 
 	//Player
 	player = new Entity(5.0f, -5.5f, 1.0f, 1.0f, "corgiLR.png", "corgiUD.png");
@@ -399,12 +403,9 @@ void Platformer::Render() {
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
 		//Title
-		DrawText(program, mainMenuText, font, "ANGRY DOGS", 0.6f, 0.1f, -3.0f, 1.3f);
+		DrawText(program, mainMenuText, font, "EXTREME HOUSEKEEPING", 0.2f, 0.1f, -3.0f, 0.6f);
+		DrawText(program, mainMenuText, font, "The Sequel", 0.15f, 0.1f, -3.0f, 1.3f);
 		DrawText(program, mainMenuText2, font, "Press space to start", 0.15f, 0.07f, -2.0f, -1.7f);
-
-		//Debug
-		//string s = to_string(textureOffsetX);
-		//DrawText(program, gameText, font, s, 0.15f, 0.07f, -2.0f, -1.4f);
 
 		//Corgi
 		player->sprite = SheetSprite(player->tex, 3, 2, player->width, player->height, 1.0f);
@@ -504,12 +505,20 @@ void Platformer::Render() {
 		gameText.setPosition(player->xPos - 2.5f, -7.95f, 1.0f);
 	}
 
-	else if (state = GAME_WIN) {
+	else if (state == GAME_WIN) {
 		DrawText(program, gameText, font, "You win!", 0.2f, 0.2f, 5.0f, -0.5f);
+		akari->sprite = SheetSprite(akari->tex, 4, 2, akari->width, akari->height, 1.0f);
+		akari->matrix.setScale(4.0f, 4.0f, 1.0f);
+		akari->matrix.setPosition(-2.0f, 0.0f, 1.0f);
+		akari->Render(program, akari->matrix, akari->runAnimationFront[akari->currentIndex]);
 	}
 
-	else if (state = GAME_LOSE) {
+	else if (state == GAME_LOSE) {
 		DrawText(program, gameText, font, "You died", 0.2f, 0.2f, 5.0f, -0.5f);
+		akari->sprite = SheetSprite(akari->tex2, 1, 1, akari->width, akari->height, 1.0f);
+		akari->matrix.setScale(4.0f, 4.0f, 1.0f);
+		akari->matrix.setPosition(-2.0f, 0.0f, 1.0f);
+		akari->Render(program, akari->matrix, 0);
 	}
 
 	SDL_GL_SwapWindow(displayWindow);
@@ -677,6 +686,9 @@ void Platformer::Update(float fixedElapsed) {
 		if (killCount == enemies.size())
 			state = GAME_WIN;
 
+		if (killCount == 1)
+			state = GAME_LOSE;
+
 		//Enemy collisions
 		for (int i = 0; i < enemies.size(); i++) {
 			if (player->collidesWith(enemies[i]) && !enemies[i]->isDead) {
@@ -698,12 +710,16 @@ void Platformer::Update(float fixedElapsed) {
 		backgroundMatrix.identity();
 		gameText.identity();
 		viewMatrix.identity();
+		akari->matrix.identity();
 	}
 
 	else if (state == GAME_WIN) {
 		backgroundMatrix.identity();
 		gameText.identity();
 		viewMatrix.identity();
+		akari->matrix.identity();
+
+		akari->Animate(fixedElapsed);
 	}
 }
 
