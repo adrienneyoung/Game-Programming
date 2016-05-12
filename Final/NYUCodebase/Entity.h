@@ -7,15 +7,16 @@ public:
 	Entity(float xPos, float yPos, float width, float height, const char* texPath);
 	Entity(float xPos, float yPos, float width, float height, const char* texPath, const char* texPath2);
 
-	void Animate(float elapsed);
-	void Update(float elapsed);
+	void Animate(float fixedElapsed);
+	void Update(float fixedElapsed);
 	void Render(ShaderProgram* program, Matrix& matrix, int index);
 
+	//Collisions
 	bool collidesWith(Entity* e);
 	bool bulletCollidesWith(Entity* e);
 	void handleCollision(Entity* e);
 
-	//Abilities 
+	//Abilities
 	void Hump();
 	void humpStop();
 	void humpStart();
@@ -28,7 +29,7 @@ public:
 	SheetSprite sprite;
 
 	//(xPos,yPos) is the center of the entity
-	float xPos = 0.0f; 
+	float xPos = 0.0f;
 	float yPos = 0.0f;
 	float width;
 	float height;
@@ -42,13 +43,13 @@ public:
 	float yAcc = 0.0f;
 
 	//Friction
-	float xFric = 1.5f;
+	float xFric = 5.0f;
 	float yFric = 0.0f;
 	//float yFric = 0.7f;
 
 	//Gravity
 	float xGrav = 0.0f;
-	float yGrav = -15.0f; 
+	float yGrav = -100.0f;
 	//float yGrav = 0.0f;
 
 	//Collision detection

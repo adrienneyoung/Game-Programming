@@ -3,10 +3,8 @@
 Entity::Entity() {}
 
 Entity::Entity(float xPos, float yPos, float width, float height, const char* texPath)
-	: xPos(xPos), yPos(yPos), width(width), height(height) { 
-	tex = LoadTexture(texPath); 
-	isHumping = false;
-	humpUp = false;
+	: xPos(xPos), yPos(yPos), width(width), height(height) {
+	tex = LoadTexture(texPath); isHumping = false; humpUp = false;
 }
 
 Entity::Entity(float xPos, float yPos, float width, float height, const char* texPath, const char* texPath2)
@@ -22,8 +20,8 @@ void Entity::Render(ShaderProgram* program, Matrix& matrix, int index) {
 	sprite.Draw(program, matrix, index, xPos, yPos);
 }
 
-void Entity::Animate(float elapsed) {
-	animationElapsed += elapsed;
+void Entity::Animate(float fixedElapsed) {
+	animationElapsed += fixedElapsed;
 	if (animationElapsed > 1.0 / framesPerSecond) {
 		currentIndex++;
 		animationElapsed = 0.0;
@@ -31,11 +29,10 @@ void Entity::Animate(float elapsed) {
 			currentIndex = 0;
 		}
 	}
-
 	Hump();
 }
 
-void Entity::Update(float elapsed)
+void Entity::Update(float fixedElapsed)
 {
 	collidedTop = false;
 	collidedBottom = false;
@@ -57,31 +54,30 @@ void Entity::Update(float elapsed)
 
 		yGrav = 0.0f;
 		xFric = 0.0f;
-		matrix.Rotate(-elapsed * 20.0f);
+		matrix.Rotate(-fixedElapsed * 20.0f);
 	}
 
 	if (isEnemy) {
 		yGrav = 0.0f;
 	}
 
-	Animate(elapsed);
+	Animate(fixedElapsed);
 }
 
 bool Entity::collidesWith(Entity* e) {
-	float top = yPos + height / 2.0f;
-	float bot = yPos - height / 2.0f;
-	float left = xPos - width / 2.0f;
-	float right = xPos + width / 2.0f;
 
-	float eTop = e->yPos + e->height / 2.0f;
-	float eBot = e->yPos - e->height / 2.0f;
-	float eLeft = e->xPos - e->width / 2.0f;
-	float eRight = e->xPos + e->width / 2.0f;
+	float top = yPos + height / 2;
+	float bot = yPos - height / 2;
+	float left = xPos - width / 2;
+	float right = xPos + width / 2;
 
-	if (bot < eTop && top > eBot && left < eRight && right > eLeft)
-	//if (yPos - height / 2 < e->yPos + e->height / 2 && yPos + height / 2 > e->yPos - e->height / 2 &&
-	//	xPos - width / 2 < e->xPos + e->width / 2 && xPos + width / 2 > e->xPos - e->width / 2)
-		return true; 
+	float blockTop = e->yPos + e->height / 2;
+	float blockBot = e->yPos - e->height / 2;
+	float blockLeft = e->xPos - e->width / 2;
+	float blockRight = e->xPos + e->width / 2;
+
+	if (bot < blockTop && top > blockBot && left < blockRight && right > blockLeft)
+		return true; //there's a collision
 	return false;
 }
 
@@ -180,12 +176,15 @@ void Entity::Hump(){
 		matrix.setRotation(0);
 	}
 }
+
 void Entity::humpStop(){
 	isHumping = false;
 }
+
 void Entity::humpStart(){
 	isHumping = true;
 }
+
 bool Entity::getHumpingStatus(){
 	return isHumping;
 }

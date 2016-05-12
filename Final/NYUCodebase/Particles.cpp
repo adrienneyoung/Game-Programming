@@ -1,6 +1,4 @@
 #include "Particles.h"
-#include "Funcs.h"
-
 Particle::Particle(){
 	texture = LoadTexture("bun.png");
 	position.x = 5.0f;

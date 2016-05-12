@@ -21,7 +21,7 @@ public:
 	float sizeDeviation;
 	float perlinY;
 	bool isDead;
-	
+
 	Particle();
 	void Render(ShaderProgram * program);
 	bool collidesWith(Entity* block);
