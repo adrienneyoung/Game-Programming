@@ -11,6 +11,16 @@ public:
 	void Update(float elapsed);
 	void Render(ShaderProgram* program, Matrix& matrix, int index);
 
+	bool collidesWith(Entity* e);
+	bool bulletCollidesWith(Entity* e);
+	void handleCollision(Entity* e);
+
+	//Abilities 
+	void Hump();
+	void humpStop();
+	void humpStart();
+	bool getHumpingStatus();
+
 	//Texture stuff
 	Matrix matrix;
 	GLuint tex;
@@ -32,13 +42,13 @@ public:
 	float yAcc = 0.0f;
 
 	//Friction
-	float xFric = 0.7f;
+	float xFric = 1.5f;
 	float yFric = 0.0f;
 	//float yFric = 0.7f;
 
 	//Gravity
 	float xGrav = 0.0f;
-	float yGrav = -10.0f; 
+	float yGrav = -15.0f; 
 	//float yGrav = 0.0f;
 
 	//Collision detection
@@ -51,6 +61,9 @@ public:
 	bool display = false;
 	bool isBullet = false;
 	bool isEnemy = false;
+	bool isDead = false;
+	bool isHumping = false;
+	bool humpUp = false;
 
 	//Animate player
 	vector<int> runAnimationLeft;
@@ -69,5 +82,6 @@ public:
 	int maxBullets = 10;
 	int bulletCount = 0;
 
-	int entityType;
+	//Health
+	float health;
 };

@@ -16,6 +16,10 @@
 #include <stdio.h>      /* printf, scanf, puts, NULL */
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
+#include <math.h>
+//#include "Particles.h"
+#include "Pair.h"
+
 using namespace std;
 
 #ifdef _WINDOWS
@@ -28,8 +32,7 @@ GLuint LoadTexture(const char *image_path);
 
 void DrawText(ShaderProgram *program, Matrix& matrix, int fontTexture, std::string text, float size, float spacing, float x, float y);
 
-class SheetSprite
-{
+class SheetSprite {
 public:
 	SheetSprite();
 	SheetSprite(unsigned int texID, int spriteCountX, int spriteCountY, float width, float height, float size);
@@ -45,3 +48,23 @@ public:
 
 float lerp(float v0, float v1, float t);
 
+class Particle {
+public:
+
+	Pair position;
+	Pair velocity;
+	float lifetime;
+
+	float width;
+	float height;
+	Matrix matrix;
+	int texture;
+
+	float sizeDeviation;
+	float perlinY;
+	bool isDead;
+
+	Particle();
+	void Render(ShaderProgram * program);
+	//bool collidesWith(Entity* block);
+};

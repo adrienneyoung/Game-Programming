@@ -78,6 +78,8 @@
     <ClCompile Include="Funcs.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matrix.cpp" />
+    <ClCompile Include="pair.cpp" />
+    <ClCompile Include="PerlinNoise.cpp" />
     <ClCompile Include="Platformer.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
   </ItemGroup>
@@ -85,6 +87,8 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Funcs.h" />
     <ClInclude Include="Matrix.h" />
+    <ClInclude Include="Pair.h" />
+    <ClInclude Include="PerlinNoise.h" />
     <ClInclude Include="Platformer.h" />
     <ClInclude Include="ShaderProgram.h" />
   </ItemGroup>
