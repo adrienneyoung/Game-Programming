@@ -22,6 +22,10 @@ public:
 	void humpStart();
 	bool getHumpingStatus();
 
+	void loadAttacks();
+	void attack();
+	void enemyBullet();
+
 	//Texture stuff
 	Matrix matrix;
 	GLuint tex;
@@ -85,4 +89,10 @@ public:
 
 	//Health
 	float health;
+
+	//Attacks
+	int atk1;
+	int atk2;
+	int atk3;
+	int atk4;
 };

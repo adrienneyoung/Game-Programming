@@ -25,9 +25,11 @@ public:
 	float startSize;
 	float endSize;
 	float sizeDeviation;
+	bool isRunning;
+	bool isLaser; //if not laser, then bun
 
 	void initializeEmitter();
-	void randomize(Particle& p, float x, float y);
+	void randomize(Particle& p, float x, float y, bool laser);
 	void RenderTexture(ShaderProgram * program);
 	void UpdateEmitter(float elapsed, float x, float y);
 	void setPosition(float x, float y);
@@ -35,7 +37,9 @@ public:
 	void turnOff();
 	bool getRunningStatus();
 	void changeDirection(int dir);
-	bool isRunning;
+	void laser();
+	void bunFountain();
+
 
 	//Platform stuff
 	Platformer();
@@ -57,6 +61,10 @@ private:
 	SDL_Window* displayWindow;
 	ShaderProgram* program;
 	Mix_Music* music;
+	Mix_Chunk* woof;
+	Mix_Chunk* jump;
+	Mix_Chunk* laserSound;
+	Mix_Chunk* akarin;
 	int state;
 
 	unsigned char levelData[LEVEL_HEIGHT][LEVEL_WIDTH];

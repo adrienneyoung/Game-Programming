@@ -188,3 +188,34 @@ void Entity::humpStart(){
 bool Entity::getHumpingStatus(){
 	return isHumping;
 }
+
+void Entity::loadAttacks(){
+	atk1 = LoadTexture("sayaka.png");
+	atk2 = LoadTexture("kyouko.png");
+	atk3 = LoadTexture("homura.png");
+	atk4 = LoadTexture("akari.png");
+}
+
+void Entity::attack(){
+
+}
+void Entity::enemyBullet(){
+	int num = rand() % RAND_MAX / 4; //gives 0-3
+	if (num == 0){
+		tex = atk4;
+	}
+	if (num == 1){
+		tex = atk3;
+	}
+	if (num == 2){
+		tex = atk2;
+	}
+	else{
+		tex = atk1;
+	}
+	xPos = xPos;
+	yPos = yPos - height / 3;
+	width = .5f;
+	height = .5f;
+	sprite = SheetSprite(tex, 1, 1, width, height, 0.25f);
+}

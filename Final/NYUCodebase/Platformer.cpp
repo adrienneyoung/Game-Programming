@@ -32,14 +32,16 @@ void Platformer::initializeEmitter(){
 	endSize = 1.0f;
 	sizeDeviation = .5;
 	isRunning = false;
-	particleTexture = LoadTexture("bun.png");
+	particleTexture = LoadTexture("homura.png");
 	direction = 1;
+	isLaser = false;
 	for (int i = 0; i < 100; i++){
 		//Random since we dont want particles to reset together
 		Particle * p = new Particle();
-		randomize(*p, position.x, position.y);
+		randomize(*p, position.x, position.y, isLaser);
 		particles.push_back(p);
 	}
+
 }
 void Platformer::turnOn(){
 	isRunning = true;
@@ -54,16 +56,41 @@ void Platformer::changeDirection(int dir){
 	//Use with player->directionFacing
 	direction = dir;
 }
-void Platformer::randomize(Particle& p, float x, float y){
+void Platformer::randomize(Particle& p, float x, float y, bool laser){
 	p.perlinY = rand() / (RAND_MAX);
 	p.lifetime = rand() / (RAND_MAX / maxLifetime);
 	p.position.x = x;
 	p.position.y = y;
 	p.sizeDeviation = rand() / (RAND_MAX / sizeDeviation);
-	p.velocity.x = (direction)*(velocity.x + rand() / (RAND_MAX / velocityDeviation.x));
-	p.velocity.y = velocity.y + rand() / (RAND_MAX / velocityDeviation.y) + .5;
+	if (isLaser){
+		p.velocity.y = 0;
+		p.velocity.x = (direction)*(velocity.x + rand() / (RAND_MAX / velocityDeviation.x * 5));
+
+	}
+	else{
+		p.velocity.y = velocity.y + rand() / (RAND_MAX / velocityDeviation.y) + .5;
+		p.velocity.x = (direction)*(velocity.x + rand() / (RAND_MAX / velocityDeviation.x));
+
+	}
 }
 
+void Platformer::laser(){
+	velocity.x = 8.0f;
+	velocity.y = 0.0f;
+	velocityDeviation.x = 1.0f;
+	velocityDeviation.y = 1.0f;
+	particleTexture = LoadTexture("laser.png");
+	isLaser = true;
+}
+
+void Platformer::bunFountain(){
+	velocity.x = 4.0f;
+	velocity.y = 3.0f;
+	velocityDeviation.x = 1.0f;
+	velocityDeviation.y = 1.0f;
+	particleTexture = LoadTexture("bun.png");
+	isLaser = false;
+}
 void Platformer::setPosition(float x, float y){
 	position.x = x;
 	position.y = y;
@@ -79,14 +106,16 @@ void Platformer::UpdateEmitter(float elapsed, float x, float y){
 			}
 			else{
 				particles[i]->isDead = false;
-				randomize(*particles[i], x, y);
+				randomize(*particles[i], x, y, isLaser);
 			}
 			//not sure if particles[i]->position = position; does the same job
 		}
 		else{
 			particles[i]->position.x += elapsed * particles[i]->velocity.x;
 			particles[i]->position.y += elapsed * particles[i]->velocity.y;
-			particles[i]->velocity.y += -9.8 * elapsed;
+			if (!isLaser){
+				particles[i]->velocity.y += -9.8 * elapsed;
+			}
 		}
 	}
 }
@@ -106,8 +135,12 @@ void Platformer::RenderTexture(ShaderProgram * program){
 
 			program->setModelMatrix(particles[i]->matrix);
 
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); //not white(?)
-			//glBlendFunc(GL_SRC_ALPHA, GL_ONE); //white
+			if (isLaser){
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE); //white
+			}
+			else{
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); //not white(?)
+			}
 			glVertexAttribPointer(program->positionAttribute, 2, GL_FLOAT, false, 0, vertices);
 			glEnableVertexAttribArray(program->positionAttribute);
 			glBindTexture(GL_TEXTURE_2D, particleTexture);
@@ -116,13 +149,14 @@ void Platformer::RenderTexture(ShaderProgram * program){
 			glEnableVertexAttribArray(program->texCoordAttribute);
 
 			glDrawArrays(GL_TRIANGLES, 0, 6);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); //white
+
 		}
 		else{
 			//do not render cuz it ded
 		}
 	}
 }
-
 
 void Platformer::BuildLevel() {
 	memcpy(levelData, level1Data, LEVEL_HEIGHT*LEVEL_WIDTH);
@@ -222,7 +256,10 @@ Platformer::Platformer() {
 }
 
 Platformer::~Platformer() {
-	//Mix_FreeChunk(someSound);
+	Mix_FreeChunk(woof);
+	Mix_FreeChunk(jump);
+	Mix_FreeChunk(laserSound);
+	Mix_FreeChunk(akarin);
 	Mix_FreeMusic(music);
 
 	delete program;
@@ -331,28 +368,10 @@ void Platformer::Setup() {
 	//Main music
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
 	music = Mix_LoadMUS("fate.mp3");
-	//music = Mix_LoadMUS("fate2.mp3");
-	//music = Mix_LoadMUS("fate3.mp3");
-	//music = Mix_LoadMUS("fate4.mp3");
-	//music = Mix_LoadMUS("fate5.mp3"); 
-
-	//music = Mix_LoadMUS("homura.mp3"); 
-	//music = Mix_LoadMUS("sayaka.mp3"); 
-	//music = Mix_LoadMUS("pmmm.mp3"); 
-	//music = Mix_LoadMUS("pmmm2.mp3"); I REALLY LIKE THIS ONE. I THINK IT WAS PLAYED WHEN HOMURA WAS FIGHTING THE HUGE BOSS WITCH
-	//music = Mix_LoadMUS("pmmm3.mp3"); THIS ONE IS KIND OF CREEPY 
-
-	//music = Mix_LoadMUS("knk.mp3");
-	//music = Mix_LoadMUS("knk2.mp3"); I LIKE THIS ONE A LOT
-	//music = Mix_LoadMUS("knk3.mp3"); THIS ONE IS REALLY GOOD
-
-	//music = Mix_LoadMUS("klk.mp3");
-	//music = Mix_LoadMUS("klk2.mp3");
-
-	//music = Mix_LoadMUS("snk.mp3");
-	//music = Mix_LoadMUS("snk2.mp3");
-
-
+	woof = Mix_LoadWAV("woof.wav");
+	jump = Mix_LoadWAV("jump.wav");
+	laserSound = Mix_LoadWAV("laser.wav");
+	akarin = Mix_LoadWAV("akarin.wav");
 	Mix_PlayMusic(music, -1);
 }
 
@@ -526,17 +545,36 @@ void Platformer::Update(float fixedElapsed) {
 		mainMenuText2.identity();
 
 		player->Update(fixedElapsed);
+
 		if (player->directionFacing == -1){
-			changeDirection(player->directionFacing);
-			UpdateEmitter(fixedElapsed, player->xPos - player->width / 5, player->yPos + player->height / 6);
+			if (!isLaser && getRunningStatus()){
+				changeDirection(player->directionFacing);
+				player->matrix.setRotation(150);
+				UpdateEmitter(fixedElapsed, player->xPos - player->width / 3, player->yPos - player->height / 3);
+			}
+			else{
+				changeDirection(player->directionFacing);
+				UpdateEmitter(fixedElapsed, player->xPos - player->width / 3, player->yPos + player->height / 5.5);
+			}
 		}
 		if (player->directionFacing == 0){
+			if (isLaser && getRunningStatus()){
+				player->matrix.setRotation(0);
+			}
 			UpdateEmitter(fixedElapsed, player->xPos, player->yPos);
 		}
 		if (player->directionFacing == 1){
-			changeDirection(player->directionFacing);
-			UpdateEmitter(fixedElapsed, player->xPos + player->width / 3, player->yPos + player->height / 5);
+			if (!isLaser && getRunningStatus()){
+				changeDirection(player->directionFacing);
+				player->matrix.setRotation(120);
+				UpdateEmitter(fixedElapsed, player->xPos + player->width / 3, player->yPos - player->height / 3);
+			}
+			else{
+				changeDirection(player->directionFacing);
+				UpdateEmitter(fixedElapsed, player->xPos + player->width / 3, player->yPos + player->height / 5.5);
+			}
 		}
+
 		//fountain->Update(fixedElapsed);
 		for (int i = 0; i < staticEntities.size(); i++) {
 			if (staticEntities[i]->runAnimationFront.size() != 0)
@@ -620,7 +658,8 @@ void Platformer::Update(float fixedElapsed) {
 						player->bullets[i]->handleCollision(enemies[j]);
 						player->bullets[i]->display = false;
 						player->bullets[i]->xVel = 0.0f;
-
+						Mix_VolumeMusic(200.0);
+						Mix_PlayChannel(-1, woof, 1);
 						enemies[j]->health -= 30.0f;
 					}
 				}
@@ -705,21 +744,48 @@ bool Platformer::Run()
 			if (event.key.keysym.scancode == SDL_SCANCODE_UP  && state == GAME_LEVEL) {
 				if (player->collidedBottom) {
 					player->yVel = 4.0f;
+					Mix_PlayChannel(-1, jump, 1);
 				}
 			}
+			
 			//Fires load
 			if (event.key.keysym.scancode == SDL_SCANCODE_2 && state == GAME_LEVEL) {
 				if (getRunningStatus()){
-					//If spraying, then turn off
-					turnOff();
+					if (isLaser){
+						bunFountain();
+					}
+					else{
+						player->matrix.setRotation(0);
+						turnOff();
+					}
 				}
 				else{
+					bunFountain();
 					turnOn();
+					Mix_PlayChannel(-1, akarin, 1);
+				}
+			}
+
+			//lazors
+			if (event.key.keysym.scancode == SDL_SCANCODE_3 && state == GAME_LEVEL) {
+				if (getRunningStatus()){
+					//If spraying, then turn off
+					if (isLaser){
+						turnOff();
+					}
+					else{
+						laser();
+					}
+				}
+				else{
+					laser();
+					turnOn();
+					Mix_PlayChannel(-1, laserSound, 1);
 				}
 			}
 
 			//Humps
-			if (event.key.keysym.scancode == SDL_SCANCODE_3 && state == GAME_LEVEL) {
+			if (event.key.keysym.scancode == SDL_SCANCODE_4 && state == GAME_LEVEL) {
 				if (player->getHumpingStatus()){
 					//If humping, then turn off
 					player->humpStop();
