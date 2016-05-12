@@ -35,7 +35,7 @@ public:
 	float height;
 
 	//Velocity (speed + direction)
-	float xVel = 0.0f;
+	float xVel = 2.0f;
 	float yVel = 0.0f;
 
 	//Acceleration
@@ -43,13 +43,13 @@ public:
 	float yAcc = 0.0f;
 
 	//Friction
-	float xFric = 5.0f;
+	float xFric = 8.0f;
 	float yFric = 0.0f;
 	//float yFric = 0.7f;
 
 	//Gravity
 	float xGrav = 0.0f;
-	float yGrav = -100.0f;
+	float yGrav = -150.0f;
 	//float yGrav = 0.0f;
 
 	//Collision detection

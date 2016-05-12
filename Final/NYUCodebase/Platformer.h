@@ -9,7 +9,7 @@
 #define SPRITE_COUNT_Y 12
 
 #define LEVEL_HEIGHT 14
-#define LEVEL_WIDTH 27
+#define LEVEL_WIDTH 83
 #define TILE_SIZE 0.6f
 
 
@@ -65,7 +65,9 @@ private:
 	Matrix projectionMatrix;
 	Matrix viewMatrix;
 	Matrix backgroundMatrix;
-	Matrix backgroundMatrix2;
+	Matrix levelOneMatrix;
+	Matrix levelTwoMatrix;
+	Matrix levelThreeMatrix;
 
 	Matrix mainMenuText;
 	Matrix mainMenuText2;
@@ -73,12 +75,16 @@ private:
 
 	GLuint font;
 	GLuint spritesheet;
-	GLuint gameBackground;
+	GLuint levelOne;
+	GLuint levelTwo;
+	GLuint levelThree;
 	GLuint mainBackground;
 
 	vector<float> svertices;
 	vector<float> stexCoords;
 	vector<float> vertices;
+	vector<float> vertices2;
+	vector<float> vertices3;
 	vector<float> texCoords;
 
 	float textureOffsetX = 3.55f;
@@ -91,5 +97,7 @@ private:
 
 	bool done = false;
 	float lastFrameTicks = 0.0f;
+
+	int killCount;
 };
 

@@ -3,20 +3,20 @@ enum GameState { MAIN_MENU, GAME_LEVEL, GAME_WIN, GAME_LOSE };
 
 unsigned char level1Data[LEVEL_HEIGHT][LEVEL_WIDTH] = {
 
-	{ 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, },
-	{ 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, },
-	{ 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, },
-	{ 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, },
-	{ 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, },
-	{ 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, },
-	{ 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, },
-	{ 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, },
-	{ 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, },
-	{ 140, 140, 140, 140, 140, 140, 140, 123, 140, 140, 140, 140, 140, 140, 140, 43, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, },
-	{ 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, },
-	{ 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, },
-	{ 79, 79, 79, 79, 79, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, },
-	{ 88, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 83, 121, 121, 121, 121, 121, 122, },
+	{ 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, },
+	{ 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, },
+	{ 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, },
+	{ 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 123, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, },
+	{ 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 43, 140, 140, },
+	{ 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 123, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, },
+	{ 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 74, 50, 39, 74, 140, 140, 140, 140, },
+	{ 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 39, 74, 50, 39, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, },
+	{ 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, },
+	{ 140, 140, 140, 140, 140, 140, 140, 123, 140, 140, 140, 140, 140, 140, 140, 43, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 123, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 74, 39, 39, 74, 50, 39, 39, 74, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, },
+	{ 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, },
+	{ 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, },
+	{ 79, 79, 79, 79, 79, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 140, 79, 79, 79, 79, },
+	{ 88, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 83, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 83, 121, 121, 121, 121, 103, 114, 114, 114, 114, 114, 114, 111, 114, 114, 114, 114, 114, 114, 114, 114, 114, 125, 114, 114, 106, 117, 117, 117, 117, 117, 117, 117, 117, 117, 117, 117, 117, 117, 117, 117, 117, 117, 117, 95, },
 };
 
 
@@ -251,7 +251,7 @@ void Platformer::Setup() {
 	//Enemies
 	for (int y = 0; y < LEVEL_HEIGHT; y++) {
 		for (int x = 0; x < LEVEL_WIDTH; x++) {
-			if (levelData[y][x] == 83) {
+			if (levelData[y][x] == 83 || levelData[y][x] == 111 || levelData[y][x] == 50) {
 				Entity* enemy = new Entity((float)x * TILE_SIZE + TILE_SIZE / 2.0f, (float)y * -TILE_SIZE + TILE_SIZE / 2.0f + 0.3f, 1.0f, 1.0f, "mum.png", "mum2.png");
 				enemy->isEnemy = true;
 				enemy->isDead = false;
@@ -279,7 +279,9 @@ void Platformer::Setup() {
 	//Textures
 	font = LoadTexture("font2.png");
 	spritesheet = LoadTexture("sheet4.png");
-	gameBackground = LoadTexture("park2.png");
+	levelOne = LoadTexture("park2.png");
+	levelTwo = LoadTexture("bathroom.png");
+	levelThree = LoadTexture("andre2.png");
 	mainBackground = LoadTexture("city.png");
 
 	//Stuff for scrolling background
@@ -304,6 +306,20 @@ void Platformer::Setup() {
 		0.0f, -2.47f,
 		2.0f, 0.52f,
 		0.0f, 0.52f };
+
+	vertices2 = { 4.25f, -2.27f,
+		6.25f, -2.27f,
+		6.25f, 0.72f,
+		4.25f, -2.27f,
+		6.25f, 0.72f,
+		4.25f, 0.72f };
+
+	vertices3 = { 6.25f, -2.67f,
+		8.25f, -2.67f,
+		8.25f, 0.32f,
+		6.25f, -2.67f,
+		8.25f, 0.32f,
+		6.25f, 0.32f };
 
 	texCoords = { 0.0, 1.0,
 		1.0, 1.0,
@@ -336,9 +352,6 @@ void Platformer::Setup() {
 	//music = Mix_LoadMUS("snk.mp3");
 	//music = Mix_LoadMUS("snk2.mp3");
 
-	//CREEPY SONGS
-	//music = Mix_LoadMUS("drrr.mp3");
-	//music = Mix_LoadMUS("drrr2.mp3");
 
 	Mix_PlayMusic(music, -1);
 }
@@ -380,17 +393,33 @@ void Platformer::Render() {
 	}
 
 	else if (state == GAME_LEVEL) {
-		//Render background
-		//fountain->RenderTexture(program);
-		program->setModelMatrix(backgroundMatrix2);
-		glBindTexture(GL_TEXTURE_2D, gameBackground);
+		//Render backgrounds
+		program->setModelMatrix(levelOneMatrix);
+		glBindTexture(GL_TEXTURE_2D, levelOne);
 		glVertexAttribPointer(program->positionAttribute, 2, GL_FLOAT, false, 0, vertices.data());
 		glVertexAttribPointer(program->texCoordAttribute, 2, GL_FLOAT, false, 0, texCoords.data());
 		glEnableVertexAttribArray(program->positionAttribute);
 		glEnableVertexAttribArray(program->texCoordAttribute);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
-		backgroundMatrix2.setScale(14.0f, 3.5f, 1.0f);
-		//backgroundMatrix2.setScale(0.5f, 0.5f, 1.0f);
+		levelOneMatrix.setScale(14.0f, 3.5f, 1.0f);
+
+		program->setModelMatrix(levelTwoMatrix);
+		glBindTexture(GL_TEXTURE_2D, levelTwo);
+		glVertexAttribPointer(program->positionAttribute, 2, GL_FLOAT, false, 0, vertices2.data());
+		glVertexAttribPointer(program->texCoordAttribute, 2, GL_FLOAT, false, 0, texCoords.data());
+		glEnableVertexAttribArray(program->positionAttribute);
+		glEnableVertexAttribArray(program->texCoordAttribute);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		levelTwoMatrix.setScale(6.0f, 4.0f, 1.0f);
+
+		program->setModelMatrix(levelThreeMatrix);
+		glBindTexture(GL_TEXTURE_2D, levelThree);
+		glVertexAttribPointer(program->positionAttribute, 2, GL_FLOAT, false, 0, vertices3.data());
+		glVertexAttribPointer(program->texCoordAttribute, 2, GL_FLOAT, false, 0, texCoords.data());
+		glEnableVertexAttribArray(program->positionAttribute);
+		glEnableVertexAttribArray(program->texCoordAttribute);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		levelThreeMatrix.setScale(6.0f, 3.0f, 1.0f);
 
 		RenderTexture(program);
 
@@ -451,9 +480,13 @@ void Platformer::Render() {
 		}
 
 		//Debug
-		/*string s = to_string(enemies[0]->health);
-		DrawText(program, gameText, font, s, 0.2f, 0.2f, 0.0f, -0.5f);
-		gameText.setPosition(8.0f, -7.8f, 1.0f);*/
+		string s = to_string(killCount);
+		DrawText(program, gameText, font, s + " / 6 Kyubeys killed", 0.2f, 0.05f, 0.0f, -0.5f);
+		gameText.setPosition(player->xPos - 2.5f, -7.95f, 1.0f);
+	}
+
+	else if (state = GAME_WIN) {
+		DrawText(program, gameText, font, "You win!", 0.2f, 0.2f, 5.0f, -0.5f);
 	}
 
 	else if (state = GAME_LOSE) {
@@ -510,15 +543,21 @@ void Platformer::Update(float fixedElapsed) {
 				staticEntities[i]->Animate(fixedElapsed);
 		}
 
+		killCount = 0;
+
 		for (int i = 0; i < enemies.size(); i++) {
-			for (Particle * p : particles){
-				if (p->collidesWith(enemies[i]) && getRunningStatus() && !enemies[i]->isDead){
-					enemies[i]->health -= .05f;
-				}
+			if (enemies[i]->isDead) {
+				killCount++;
 			}
 
 			if (enemies[i]->health <= 0.0f) {
 				enemies[i]->isDead = true;
+			}
+
+			for (Particle * p : particles){
+				if (p->collidesWith(enemies[i]) && getRunningStatus() && !enemies[i]->isDead){
+					enemies[i]->health -= .05f;
+				}
 			}
 
 			if (player->isHumping && player->collidesWith(enemies[i]) && !enemies[i]->isDead) {
@@ -587,7 +626,7 @@ void Platformer::Update(float fixedElapsed) {
 				}
 			}
 			//Don't display bullets when out of bounds
-			if (player->bullets[i]->xPos > 30.0f || player->bullets[i]->xPos < 2.0f) {
+			if (player->bullets[i]->xPos > player->xPos + 10.0f || player->bullets[i]->xPos < player->xPos - 10.0f) {
 				player->bullets[i]->display = false;
 				player->bullets[i]->xVel = 0.0f;
 			}
@@ -595,6 +634,9 @@ void Platformer::Update(float fixedElapsed) {
 
 		if (player->yPos < -10.0f)
 			state = GAME_LOSE;
+
+		if (killCount == enemies.size())
+			state = GAME_WIN;
 
 		//Enemy collisions
 		for (int i = 0; i < enemies.size(); i++) {
@@ -614,6 +656,12 @@ void Platformer::Update(float fixedElapsed) {
 	}
 
 	else if (state == GAME_LOSE) {
+		backgroundMatrix.identity();
+		gameText.identity();
+		viewMatrix.identity();
+	}
+
+	else if (state == GAME_WIN) {
 		backgroundMatrix.identity();
 		gameText.identity();
 		viewMatrix.identity();
@@ -656,7 +704,7 @@ bool Platformer::Run()
 			//Jump
 			if (event.key.keysym.scancode == SDL_SCANCODE_UP  && state == GAME_LEVEL) {
 				if (player->collidedBottom) {
-					player->yVel = 3.0f;
+					player->yVel = 4.0f;
 				}
 			}
 			//Fires load
@@ -692,13 +740,13 @@ bool Platformer::Run()
 						//Bullet comes out of the front of the player
 						if (player->directionFacing == 1) {
 							player->bullets[player->bulletCount]->xPos = player->xPos + player->width / 2 + player->bullets[player->bulletCount]->width / 2;
-							player->bullets[player->bulletCount]->xVel = 2.0f;
+							player->bullets[player->bulletCount]->xVel = 3.0f;
 							player->bullets[player->bulletCount]->xPos += player->bullets[player->bulletCount]->xVel * FIXED_TIMESTEP;
 						}
 
 						else if (player->directionFacing == -1) {
 							player->bullets[player->bulletCount]->xPos = player->xPos - player->width / 2 - player->bullets[player->bulletCount]->width / 2;
-							player->bullets[player->bulletCount]->xVel = -2.0f;
+							player->bullets[player->bulletCount]->xVel = -3.0f;
 							player->bullets[player->bulletCount]->xPos -= player->bullets[player->bulletCount]->xVel * FIXED_TIMESTEP;
 						}
 
@@ -721,13 +769,13 @@ bool Platformer::Run()
 
 	//Player move right
 	if (keys[SDL_SCANCODE_RIGHT]) {
-		player->xAcc = fixedElapsed * 25.0f;
+		player->xAcc = fixedElapsed * 35.0f;
 		player->directionFacing = 1;
 	}
 
 	//Player move left
 	else if (keys[SDL_SCANCODE_LEFT]) {
-		player->xAcc = fixedElapsed * -25.0f;
+		player->xAcc = fixedElapsed * -35.0f;
 		player->directionFacing = -1;
 	}
 

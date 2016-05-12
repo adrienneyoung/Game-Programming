@@ -54,7 +54,7 @@ void Entity::Update(float fixedElapsed)
 
 		yGrav = 0.0f;
 		xFric = 0.0f;
-		matrix.Rotate(-fixedElapsed * 20.0f);
+		matrix.setRotation(fixedElapsed);
 	}
 
 	if (isEnemy) {
